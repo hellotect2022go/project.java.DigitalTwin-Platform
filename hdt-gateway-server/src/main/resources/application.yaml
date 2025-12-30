@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: hdt-gateway-server
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health, info
+
+# 통합SI 테이터 호출 URL
+external:
+  vendor:
+    base-url: "http://localhost:9999"
+
+# Event 서버 주소
+internal:
+  event:
+    base-url: "http://localhost:8081"

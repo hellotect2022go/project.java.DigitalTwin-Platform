@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: hdt-event-server
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health, info
