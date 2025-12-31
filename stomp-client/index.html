@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stomp-client</title>
+  </head>
+  <body>
+    <input id="url"  style="width: 300px;" value="http://192.168.10.218:8082/stomp"/> 
+    <button id="connectBtn" onclick="connect()">connect</button>
+    <button id="disconnectBtn" onclick="disconnect()">disconnect</button>
+    <div style="border:1px solid #ccc; margin-top: 10px; padding: 5px;" >
+        <span></span>
+        <div><span>직접입력 : </span><input value="" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
+        <div><span>구독채널 1 : </span><input value="/sub/digitaltwin/all" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
+        <div><span>구독채널 2 : </span><input value="/sub/digitaltwin/updates" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
+        <div><span>구독채널 3 : </span><input value="/sub/digitaltwin/ASSET_001" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
+    </div>
+    
+    <div id="channelBox" style="display: flex; flex-direction: column; gap: 10px;"> 
+
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
