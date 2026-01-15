@@ -4,6 +4,61 @@ server:
 spring:
   application:
     name: hdt-digitaltwin-server
+  
+  # H2 Database 설정
+  datasource:
+    url: jdbc:h2:mem:digitaltwin
+#    url: jdbc:h2:file:./digitaltwin
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: true
+  
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+
+# JWT 설정 (관제 시스템 최적화)
+jwt:
+  secret: hdt-digitaltwin-secret-key-2026-hanaDream-security-token-key-minimum-256-bits
+  expiration: 1800000              # Access Token: 30분 (짧게, 자동 갱신)
+  refresh-expiration: 7776000000   # Refresh Token: 90일 (관제 전용 PC용 롱 세션)
+  auto-refresh-before-minutes: 5   # Access Token 만료 5분 전 자동 갱신
+
+# 비밀번호 정책
+password:
+  change-period-days: 90
+  min-length: 8
+  require-special-char: true
+  require-number: true
+  require-uppercase: true
+
+# 인증 및 세션 정책 (관제 시스템 전용)
+auth:
+  max-devices-per-user: 10         # 관제실 특성상 다중 모니터 지원 (10대)
+  allow-concurrent-sessions: true  # 동시 접속 허용
+  enable-ip-whitelist: true        # IP 화이트리스트 활성화
+  session-timeout-hours: 2160      # 세션 타임아웃: 90일 (관제 전용)
+  
+# 관제 시스템 전용 설정
+monitoring:
+  control-room-mode: true          # 관제실 모드
+  silent-token-refresh: true       # 무중단 자동 토큰 갱신
+  websocket-keep-alive: true       # WebSocket 연결 유지 (토큰 만료 시에도)
+  global-logout-enabled: true      # 전역 로그아웃 기능 활성화
 
 management:
   endpoint:
@@ -13,3 +68,10 @@ management:
   info:
     env:
       enabled: true
+
+# 로깅 설정
+logging:
+  level:
+    com.mpole.hdt.digitaltwin: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO

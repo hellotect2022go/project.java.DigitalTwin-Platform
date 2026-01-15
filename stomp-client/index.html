@@ -12,6 +12,13 @@
     <button id="disconnectBtn" onclick="disconnect()">disconnect</button>
     <div style="border:1px solid #ccc; margin-top: 10px; padding: 5px;" >
         <span></span>
+        <div>
+          <span>경로:</span> <input id="destPath" value="/pub/digitaltwin/ping" /> <br>
+          <div>데이터(JSON):</div> 
+          <textarea id="jsonBody" style="width: 300px; height: 80px;">{"sender":"me", "content":"hello"}</textarea> <br>
+          <button onclick="sendMessage(this)">Publish</button>
+      </div>
+        <div><span>응답 : </span><input value="/sub/digitaltwin/pong" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
         <div><span>직접입력 : </span><input value="" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
         <div><span>구독채널 1 : </span><input value="/sub/digitaltwin/all" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
         <div><span>구독채널 2 : </span><input value="/sub/digitaltwin/updates" /> <button onclick="subscribeGroup(this)">subscribe</button></div>
