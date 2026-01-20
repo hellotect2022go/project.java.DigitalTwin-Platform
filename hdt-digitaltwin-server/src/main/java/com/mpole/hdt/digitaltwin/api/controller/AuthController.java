@@ -1,18 +1,19 @@
 package com.mpole.hdt.digitaltwin.api.controller;
 
 import com.mpole.hdt.digitaltwin.api.dto.*;
+import com.mpole.hdt.digitaltwin.api.dto.auth.ActiveSessionsResponse;
+import com.mpole.hdt.digitaltwin.api.dto.auth.ChangePasswordRequest;
+import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
+import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
 import com.mpole.hdt.digitaltwin.application.service.AuthService;
 import com.mpole.hdt.digitaltwin.infrastructure.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.attribute.UserPrincipal;
 
 @Slf4j
 @RestController

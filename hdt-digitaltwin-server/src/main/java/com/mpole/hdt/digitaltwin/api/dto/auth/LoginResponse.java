@@ -1,4 +1,4 @@
-package com.mpole.hdt.digitaltwin.api.dto;
+package com.mpole.hdt.digitaltwin.api.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

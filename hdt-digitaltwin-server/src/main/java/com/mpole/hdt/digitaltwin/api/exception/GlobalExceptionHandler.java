@@ -44,17 +44,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * IllegalArgumentException: 잘못된 요청 데이터
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.warn("잘못된 요청: {}", e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(e.getMessage(), "INVALID_REQUEST"));
-    }
-
-    /**
      * IllegalStateException: 계정 상태 오류 (잠금, 비활성화 등)
      */
     @ExceptionHandler(IllegalStateException.class)
@@ -63,6 +52,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.error(e.getMessage(), "ACCOUNT_STATE_ERROR"));
+    }
+
+    /**
+     * IllegalArgumentException: 잘못된 요청 데이터
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.warn("잘못된 요청: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(e.getMessage(), "INVALID_REQUEST"));
     }
 
     /**

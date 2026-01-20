@@ -1,9 +1,9 @@
 package com.mpole.hdt.digitaltwin.application.service;
 
-import com.mpole.hdt.digitaltwin.api.dto.ActiveSessionsResponse;
-import com.mpole.hdt.digitaltwin.api.dto.ChangePasswordRequest;
-import com.mpole.hdt.digitaltwin.api.dto.LoginRequest;
-import com.mpole.hdt.digitaltwin.api.dto.LoginResponse;
+import com.mpole.hdt.digitaltwin.api.dto.auth.ActiveSessionsResponse;
+import com.mpole.hdt.digitaltwin.api.dto.auth.ChangePasswordRequest;
+import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
+import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
 import com.mpole.hdt.digitaltwin.application.repository.UserRepository;
 import com.mpole.hdt.digitaltwin.application.repository.entity.RefreshToken;
 import com.mpole.hdt.digitaltwin.application.repository.entity.User;

@@ -1,4 +1,4 @@
-package com.mpole.hdt.digitaltwin.api.dto;
+package com.mpole.hdt.digitaltwin.api.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
