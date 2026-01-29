@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "device_system_types")
+@Table(name = "system_types")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeviceSystemType extends DateEntity{
+public class SystemType extends DateEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

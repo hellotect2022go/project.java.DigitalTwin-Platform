@@ -9,13 +9,13 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 
 @Entity
-@Table(name="device_assets")
+@Table(name="device_model")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeviceAsset extends DateEntity{
+public class DeviceModel extends DateEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,38 +32,17 @@ public class DeviceAsset extends DateEntity{
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="category_id", nullable = false)
-    private DeviceCategory category;
+    private Category category;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="sys_id", nullable = false)
-    private DeviceSystemType systemType;
+    private SystemType systemType;
 
-    @Column(length=100)
-    private String building;
-
-    @Column(length = 50)
-    private String floor;
-
-    @Column(length = 100)
-    private String zone;
-
-    private Long object3dId;
-
-    private Float unityPositionX;
-
-    private Float unityPositionY;
-
-    private Float unityPositionZ;
-
-    private Float unityRotationX;
-
-    private Float unityRotationY;
-
-    private Float unityRotationZ;
-
-    @Column(nullable = false)
-    @Builder.Default
-    private Float unityScale = 1.0f;
+    // ⭐ 3D 모델 참조
+    //@OneToOne(fetch=FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name="model_id")
+    private Asset3DModel asset3DModel;
 
     @Column(length = 100)
     private String manufacturer;
@@ -80,7 +59,6 @@ public class DeviceAsset extends DateEntity{
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "custom_attributes", columnDefinition = "TEXT")
     private Map<String, Object> customAttributes;
-
 
     @Column(nullable = false)
     @Builder.Default

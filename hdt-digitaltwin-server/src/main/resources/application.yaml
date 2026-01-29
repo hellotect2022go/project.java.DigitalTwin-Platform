@@ -86,5 +86,5 @@ logging:
   level:
     com.mpole.hdt.digitaltwin: INFO
     org.springframework.security: INFO
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -1,19 +1,20 @@
-package com.mpole.hdt.digitaltwin.api.dto.devicecategory;
+package com.mpole.hdt.digitaltwin.api.dto.category;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeviceCategoryDTO {
-    private Long categoryId;
+@Builder
+public class CategoryDTO {
+
+    private Long id;
     private Long parentId;
     private Integer depth;
     private String categoryCode;
@@ -26,8 +27,10 @@ public class DeviceCategoryDTO {
     private OffsetDateTime updatedAt;
 
     // 트리 구조용
-    private List<DeviceCategoryDTO> children;
-
-    // 전체 경로 (예: "기계설비 > 자동제어 > 제어반")
+    @Builder.Default
+    private List<CategoryDTO> children = new ArrayList<>();
+    
+    // 전체 경로 (예: "대분류 > 중분류 > 소분류")
     private String fullPath;
 }
+

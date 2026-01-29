@@ -6,13 +6,13 @@ import lombok.*;
 import java.util.Date;
 
 @Entity
-@Table(name="device_category_system_mapping")
+@Table(name="category_system_mapping")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeviceCategorySystemMapping extends DateEntity {
+public class CategorySystemMapping extends DateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class DeviceCategorySystemMapping extends DateEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    private DeviceCategory category;
+    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="sys_id", nullable = false)
-    private DeviceSystemType systemType;
+    private SystemType systemType;
 
     @Builder.Default
     private Boolean isDefault = false;    // 기본시스템 여부
