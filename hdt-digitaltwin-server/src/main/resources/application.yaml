@@ -4,35 +4,54 @@ server:
 spring:
   application:
     name: hdt-digitaltwin-server
-  
-  # H2 Database 설정
+
   datasource:
-    url: jdbc:h2:mem:digitaltwin
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        trace: false
-        web-allow-others: true
-  
+    # localhost 부분에는 DB 주소를, digitaltwin 부분에는 생성한 DB 이름을 넣으세요.
+    url: jdbc:postgresql://192.168.5.216:5432/hana_test
+    driver-class-name: org.postgresql.Driver
+    username: root  # PostgreSQL 설치 시 설정한 사용자명 (보통 postgres)
+    password: example    # 설정한 비밀번호
+
   jpa:
     hibernate:
-      ddl-auto: create  # 테이블 자동 생성
-    show-sql: true
+      # 새 DB이므로 처음엔 create로 테이블을 생성하고, 이후엔 update로 바꾸세요.
+      ddl-auto: update
     properties:
       hibernate:
+        # PostgreSQL에 최적화된 쿼리를 생성하도록 방언 설정
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
     defer-datasource-initialization: true  # JPA 테이블 생성 후 data.sql 실행
+  
+  # H2 Database 설정
+#  datasource:
+#    url: jdbc:h2:mem:digitaltwin
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+#      settings:
+#        trace: false
+#        web-allow-others: true
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create  # 테이블 자동 생성
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        dialect: org.hibernate.dialect.H2Dialect
+#    defer-datasource-initialization: true  # JPA 테이블 생성 후 data.sql 실행
 
-  sql:
-    init:
-      mode: always  # data.sql 실행
+#  sql:
+#    init:
+#      mode: always  # data.sql 실행
 
 # JWT 설정 (관제 시스템 최적화)
 jwt:

@@ -44,7 +44,7 @@ public class SecurityConfig {
                 
                 // URL별 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+                        //.requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/actuator/**").permitAll()  // 운영 시 hasRole('ADMIN')으로 변경
                         .requestMatchers(
                                 "/api/auth/login",          // 로그인
@@ -80,7 +80,8 @@ public class SecurityConfig {
                                 "/api/digitaltwin/status",  // 상태 조회
                                 "/api/digitaltwin/data"     // 데이터 조회
                         ).hasAnyRole("ADMIN", "MANAGER", "USER")
-                        .anyRequest().authenticated()
+                        //.anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 // H2 Console을 위한 Frame 설정
                 .headers(headers -> headers
