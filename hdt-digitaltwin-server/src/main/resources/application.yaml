@@ -52,6 +52,19 @@ spring:
 #  sql:
 #    init:
 #      mode: always  # data.sql 실행
+  
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB      # 최대 파일 크기
+      max-request-size: 100MB   # 최대 요청 크기
+      file-size-threshold: 2KB  # 메모리에 저장할 임계값
+
+# 파일 업로드 경로 설정
+file:
+  upload:
+    path: uploads/3d-models
+    thumbnail-path: uploads/thumbnails
 
 # JWT 설정 (관제 시스템 최적화)
 jwt:
