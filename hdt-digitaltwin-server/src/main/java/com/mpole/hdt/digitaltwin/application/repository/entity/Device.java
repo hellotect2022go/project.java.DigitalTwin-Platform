@@ -2,16 +2,19 @@ package com.mpole.hdt.digitaltwin.application.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 
+/**
+ * Device (실제 장비 인스턴스)
+ * DeviceModel을 기반으로 생성된 실제 설치된 장비
+ */
 @Entity
 @Table(name = "devices", indexes = {
-        @Index(name = "idx_model_id", columnList = "device_model_id"),
-        @Index(name = "idx_device_id", columnList = "device_id")
+        @Index(name = "idx_devices_device_id", columnList = "device_id"),
+        @Index(name = "idx_devices_model_id", columnList = "device_model_id"),
+        @Index(name = "idx_devices_status", columnList = "status"),
+        @Index(name = "idx_devices_floor", columnList = "floor")
 })
 @Getter
 @Setter
@@ -24,134 +27,121 @@ public class Device extends DateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ⭐ DeviceAsset과 1:1 관계
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_model_id", nullable = false, unique = true)
+    /**
+     * 장비 고유 식별자 (예: "CH-01-001", "CH-01-002")
+     */
+    @Column(name = "device_id", nullable = false, unique = true, length = 100)
+    private String deviceId;
+
+    /**
+     * 장비명 (예: "흡수식 냉동기 1호기")
+     */
+    @Column(name = "device_name", nullable = false, length = 200)
+    private String deviceName;
+
+    /**
+     * DeviceModel 참조 (N:1)
+     * 하나의 모델로 여러 실제 장비 생성 가능
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "device_model_id", nullable = false)
     private DeviceModel deviceModel;
 
-    // ==========================================
-    // 실제 장비 식별 정보
-    // ==========================================
-
-    @Column(nullable = false, unique = true, length = 200)
-    private String deviceId; // 실제 장비의 고유 ID (MAC, GUID, BACnet ID 등)
-
-    @Column(length = 100)
-    private String ipAddress; // IP 주소
-
+    /**
+     * 장비 상태
+     * RUNNING: 가동중
+     * STOPPED: 정지
+     * ERROR: 오류
+     * MAINTENANCE: 점검중
+     * STANDBY: 대기
+     */
     @Column(length = 50)
-    private String port; // 포트 번호
+    @Builder.Default
+    private String status = "STANDBY";
 
-    @Column(length = 50)
-    private String protocol; // BACnet, Modbus, MQTT, HTTP 등
+    /**
+     * 온라인 여부 (통신 상태)
+     */
+    @Column(name = "online")
+    @Builder.Default
+    private Boolean online = false;
 
+    /**
+     * 설치 위치 (텍스트)
+     */
     @Column(length = 200)
-    private String connectionString; // 연결 문자열
+    private String location;
 
-    // ==========================================
-    // 실시간 상태 정보 (Dynamic Data)
-    // ==========================================
+    /**
+     * 층 정보 (예: "B1F", "1F", "2F")
+     */
+    @Column(length = 20)
+    private String floor;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private String operationStatus = "OFFLINE";
-    // ONLINE, OFFLINE, ERROR, MAINTENANCE, STANDBY
+    /**
+     * 구역 정보 (예: "ZONE-A", "ZONE-B")
+     */
+    @Column(length = 50)
+    private String zone;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean isRunning = false; // 가동 중 여부
+    /**
+     * 현재 측정값
+     */
+    @Column(name = "current_value")
+    private Double currentValue;
 
-    private OffsetDateTime lastCommunicationTime; // 마지막 통신 시간
+    /**
+     * 단위 (예: "℃", "kW", "㎥/h")
+     */
+    @Column(length = 20)
+    private String unit;
 
-    private OffsetDateTime lastStatusChangeTime; // 마지막 상태 변경 시간
+    /**
+     * 마지막 통신 시간
+     */
+    @Column(name = "last_communication")
+    private OffsetDateTime lastCommunication;
 
-    // ==========================================
-    // 실시간 측정값 (센서 데이터)
-    // ==========================================
+    /**
+     * 설치 일자
+     */
+    @Column(name = "installation_date")
+    private OffsetDateTime installationDate;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    /**
+     * 제조 일자
+     */
+    @Column(name = "manufacture_date")
+    private OffsetDateTime manufactureDate;
+
+    /**
+     * 시리얼 번호
+     */
+    @Column(name = "serial_number", length = 100)
+    private String serialNumber;
+
+    /**
+     * 설명
+     */
     @Column(columnDefinition = "TEXT")
-    private Map<String, Object> currentValues;
-    // 예: {
-    //   "temperature": 22.5,
-    //   "humidity": 45.0,
-    //   "fan_speed": 1200,
-    //   "power_consumption": 3.2,
-    //   "flow_rate": 800
-    // }
+    private String description;
 
-    // ==========================================
-    // 제어 설정값
-    // ==========================================
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "TEXT")
-    private Map<String, Object> setPoints;
-    // 예: {
-    //   "target_temperature": 24.0,
-    //   "target_humidity": 50.0,
-    //   "mode": "AUTO",
-    //   "schedule": "OFFICE_HOURS"
-    // }
-
-    // ==========================================
-    // 알람 및 경고
-    // ==========================================
-
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean hasAlarm = false;
-
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean hasWarning = false;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "TEXT")
-    private Map<String, Object> alarms;
-    // 예: [
-    //   {"code": "HIGH_TEMP", "message": "온도 과상승", "severity": "ERROR"},
-    //   {"code": "FILTER_REPLACE", "message": "필터 교체 필요", "severity": "WARNING"}
-    // ]
-
-    // ==========================================
-    // 통계 정보
-    // ==========================================
-
-    private Double todayPowerConsumption; // 금일 전력 소비량 (kWh)
-
-    private Long todayRunningTime; // 금일 가동 시간 (초)
-
-    private Long totalRunningTime; // 총 가동 시간 (초)
-
-    private Integer restartCount; // 재시작 횟수
-
-    // ==========================================
-    // 유지보수 정보
-    // ==========================================
-
-    private OffsetDateTime lastMaintenanceDate; // 마지막 유지보수 일자
-
-    private OffsetDateTime nextMaintenanceDate; // 다음 유지보수 예정일
-
-    @Column(length = 500)
-    private String maintenanceNotes; // 유지보수 노트
-
-    // ==========================================
-    // 확장 속성
-    // ==========================================
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "TEXT")
-    private Map<String, Object> deviceMetadata;
-
+    /**
+     * 활성화 여부
+     */
     @Column(nullable = false)
     @Builder.Default
     private Boolean enabled = true;
 
-    @Column(length = 50)
+    /**
+     * 생성자
+     */
+    @Column(name = "created_by", length = 50)
     private String createdBy;
 
-    @Column(length = 50)
+    /**
+     * 수정자
+     */
+    @Column(name = "updated_by", length = 50)
     private String updatedBy;
 }
