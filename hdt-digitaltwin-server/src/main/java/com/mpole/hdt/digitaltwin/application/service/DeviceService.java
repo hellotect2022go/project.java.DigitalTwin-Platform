@@ -1,9 +1,6 @@
 package com.mpole.hdt.digitaltwin.application.service;
 
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DevicePlacementDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DevicePlacementRequest;
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceRequest;
+import com.mpole.hdt.digitaltwin.api.dto.device.*;
 import com.mpole.hdt.digitaltwin.application.repository.DevicePlacementRepository;
 import com.mpole.hdt.digitaltwin.application.repository.DeviceRepository;
 import com.mpole.hdt.digitaltwin.application.repository.DeviceModelRepository;
@@ -259,6 +256,48 @@ public class DeviceService {
         
         return toPlacementDto(placement);
     }
+
+    /**
+     * Category Id 로 Device 조회
+     */
+    @Transactional(readOnly = true)
+    public List<DeviceByCategoryDTO> getDevicesByCategoryId(Long categoryId) {
+        List<Device> devices = deviceRepository.findDevicesByCategoryId(categoryId);
+
+        List<DeviceByCategoryDTO> deviceDTOS = devices.stream().map(device->{
+            DeviceByCategoryDTO dto = DeviceByCategoryDTO.builder()
+                    .deviceId(device.getDeviceId())
+                    .deviceName(device.getDeviceName())
+                    .build();
+            // DeviceModel 정보
+            DeviceModel model = device.getDeviceModel();
+            dto.setDeviceModelId(model.getId());
+            dto.setModelAssetCode(model.getAssetCode());
+            dto.setModelAssetNameKo(model.getAssetNameKo());
+            dto.setCategoryId(model.getCategory().getId());
+            dto.setCategoryCode(model.getCategory().getCategoryCode());
+            dto.setCategoryNameKo(model.getCategory().getCategoryNameKo());
+            dto.setCategoryPath(buildCategoryPath(model.getCategory()));
+
+            dto.setSysCode(model.getSystemType().getSysCode());
+            dto.setSysNameKo(model.getSystemType().getSysNameKo());
+
+            // Asset3DModel 정보
+            if (model.getAsset3DModel() != null) {
+                dto.setAsset3DModelName(model.getAsset3DModel().getModelName());
+            }
+
+            dto.setSet((device.getPlacement() != null));
+
+
+
+            return dto;
+
+        }).toList();
+
+
+        return deviceDTOS;
+    }
     
     /**
      * Entity -> DTO 변환
@@ -270,9 +309,9 @@ public class DeviceService {
                 .deviceName(device.getDeviceName())
                 .status(device.getStatus())
                 .online(device.getOnline())
-                .location(device.getLocation())
-                .floor(device.getFloor())
-                .zone(device.getZone())
+//                .location(device.getLocation())
+//                .floor(device.getFloor())
+//                .zone(device.getZone())
                 .currentValue(device.getCurrentValue())
                 .unit(device.getUnit())
                 .lastCommunication(device.getLastCommunication())

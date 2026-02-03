@@ -1,10 +1,8 @@
 package com.mpole.hdt.digitaltwin.api.controller;
 
 import com.mpole.hdt.digitaltwin.api.dto.ApiResponse;
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DevicePlacementDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DevicePlacementRequest;
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceRequest;
+import com.mpole.hdt.digitaltwin.api.dto.device.*;
+import com.mpole.hdt.digitaltwin.api.dto.devicemodel.DeviceModelDTO;
 import com.mpole.hdt.digitaltwin.application.service.DeviceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -167,6 +165,18 @@ public class DeviceController {
         request.setDeviceId(deviceId);
         DevicePlacementDTO placement = service.savePlacement(request);
         return ResponseEntity.ok(ApiResponse.success("저장 성공", placement));
+    }
+
+    /**
+     * 카테고리별 조회
+     * GET /api/devices/category/{categoryId}
+     */
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ApiResponse<List<DeviceByCategoryDTO>>> getModelsByCategory(
+            @PathVariable Long categoryId) {
+        log.info("장비 카테고리별 조회: categoryId={}", categoryId);
+        List<DeviceByCategoryDTO> models = service.getDevicesByCategoryId(categoryId);
+        return ResponseEntity.ok(ApiResponse.success("조회 성공", models));
     }
 }
 

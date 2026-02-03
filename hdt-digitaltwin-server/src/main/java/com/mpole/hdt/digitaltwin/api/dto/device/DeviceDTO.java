@@ -17,9 +17,9 @@ public class DeviceDTO {
     private String deviceName;
     private String status;
     private Boolean online;
-    private String location;
-    private String floor;
-    private String zone;
+//    private String location;
+//    private String floor;
+//    private String zone;
     private Double currentValue;
     private String unit;
     private OffsetDateTime lastCommunication;

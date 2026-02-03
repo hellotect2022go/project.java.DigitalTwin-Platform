@@ -87,5 +87,11 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
      */
     @Query("SELECT d FROM Device d WHERE d.deviceModel.systemType.id = :systemTypeId")
     List<Device> findBySystemTypeId(@Param("systemTypeId") Long systemTypeId);
+
+    // 별도 쿼리로 Device 조회
+    @Query("SELECT d FROM Device d " +
+            "JOIN FETCH d.deviceModel dm " +
+            "WHERE dm.category.id = :categoryId")
+    List<Device> findDevicesByCategoryId(@Param("categoryId") Long categoryId);
 }
 

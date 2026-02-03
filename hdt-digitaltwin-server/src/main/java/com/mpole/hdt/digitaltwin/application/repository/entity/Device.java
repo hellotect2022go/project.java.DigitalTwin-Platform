@@ -47,6 +47,10 @@ public class Device extends DateEntity {
     @JoinColumn(name = "device_model_id", nullable = false)
     private DeviceModel deviceModel;
 
+
+    @OneToOne(mappedBy = "device", fetch = FetchType.LAZY)
+    private DevicePlacement placement;
+
     /**
      * 장비 상태
      * RUNNING: 가동중
