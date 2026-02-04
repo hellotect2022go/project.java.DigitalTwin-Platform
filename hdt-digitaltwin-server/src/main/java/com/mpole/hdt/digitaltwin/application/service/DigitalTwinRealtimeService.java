@@ -30,7 +30,7 @@ public class DigitalTwinRealtimeService {
      * 1초 주기로 센서 데이터 업데이트 및 전송
      * fixedRate: 이전 작업 시작 시점부터 1000ms 후 실행
      */
-    @Scheduled(fixedRate = 1000)
+    //@Scheduled(fixedRate = 1000)
     public void pushSensorDataUpdates() {
         try {
             updateCount++;

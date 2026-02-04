@@ -104,9 +104,36 @@ function channelResponse(response) {
     }
 }
 
+function sendMessage(btn) {
+   
+    const urlInput = btn.parentElement.querySelector('input');
+    const destinationUrl = urlInput.value.trim();
+    const jsonRaw = btn.parentElement.querySelector('textarea').value.trim();
+    const jsonObject = JSON.parse(jsonRaw);
+    console.log(jsonObject)
+        // 2. STOMP 연결 상태 확인 (라이브러리 버전에 따라 .active 또는 .connected 사용)
+    if (stompClient && (stompClient.connected || stompClient.active)) {
+        
+        // 3. 메시지 발행
+        stompClient.publish({
+            destination: destinationUrl, // input에서 입력한 경로로 발송
+            body: JSON.stringify(jsonObject),
+            headers: { 
+                priority: '9',
+                // 필요하다면 여기에 세션 ID나 토큰을 추가할 수도 있음
+            }
+        });
+
+        console.log(`🚀 [발행 완료] 경로: ${destinationUrl}`);
+    } else {
+        console.error('❌ 서버에 연결되지 않았습니다. 상태를 확인하세요.');
+    }
+}
+
 
 
 window.connect = connect;
 window.disconnect = disconnect;
 window.subscribeGroup = subscribeGroup;
+window.sendMessage = sendMessage;
 
