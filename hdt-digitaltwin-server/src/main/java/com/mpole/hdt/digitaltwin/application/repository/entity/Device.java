@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
  */
 @Entity
 @Table(name = "devices", indexes = {
-        @Index(name = "idx_devices_device_id", columnList = "device_id"),
+        @Index(name = "idx_devices_device_code", columnList = "device_code"),
         @Index(name = "idx_devices_model_id", columnList = "device_model_id"),
         @Index(name = "idx_devices_status", columnList = "status"),
         @Index(name = "idx_devices_floor", columnList = "floor")
@@ -30,8 +30,8 @@ public class Device extends DateEntity {
     /**
      * 장비 고유 식별자 (예: "CH-01-001", "CH-01-002")
      */
-    @Column(name = "device_id", nullable = false, unique = true, length = 100)
-    private String deviceId;
+    @Column(name = "device_code", nullable = false, unique = true, length = 100)
+    private String deviceCode;
 
     /**
      * 장비명 (예: "흡수식 냉동기 1호기")

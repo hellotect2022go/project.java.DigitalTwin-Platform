@@ -15,12 +15,12 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     /**
      * Device ID로 조회
      */
-    Optional<Device> findByDeviceId(String deviceId);
+    Optional<Device> findByDeviceCode(String deviceCode);
     
     /**
      * Device ID 존재 여부
      */
-    boolean existsByDeviceId(String deviceId);
+    boolean existsByDeviceCode(String deviceCode);
     
     /**
      * DeviceModel별 조회
@@ -66,7 +66,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
      * 검색 (Device ID, Name, Location)
      */
     @Query("SELECT d FROM Device d WHERE " +
-           "d.deviceId LIKE %:keyword% OR " +
+           "d.deviceCode LIKE %:keyword% OR " +
            "d.deviceName LIKE %:keyword% OR " +
            "d.location LIKE %:keyword%")
     List<Device> searchByKeyword(@Param("keyword") String keyword);

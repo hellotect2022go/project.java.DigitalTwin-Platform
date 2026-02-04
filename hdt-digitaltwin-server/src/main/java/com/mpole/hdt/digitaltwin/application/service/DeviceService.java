@@ -60,9 +60,9 @@ public class DeviceService {
      * Device ID로 장비 조회
      */
     @Transactional(readOnly = true)
-    public DeviceDTO getDeviceByDeviceId(String deviceId) {
-        Device device = deviceRepository.findByDeviceId(deviceId)
-                .orElseThrow(() -> new IllegalArgumentException("장비를 찾을 수 없습니다: " + deviceId));
+    public DeviceDTO getDeviceByDeviceCode(String deviceCode) {
+        Device device = deviceRepository.findByDeviceCode(deviceCode)
+                .orElseThrow(() -> new IllegalArgumentException("장비를 찾을 수 없습니다: " + deviceCode));
         return toDto(device);
     }
     
@@ -112,8 +112,8 @@ public class DeviceService {
     @Transactional
     public DeviceDTO createDevice(DeviceRequest request) {
         // Device ID 중복 체크
-        if (deviceRepository.existsByDeviceId(request.getDeviceId())) {
-            throw new IllegalArgumentException("이미 존재하는 Device ID입니다: " + request.getDeviceId());
+        if (deviceRepository.existsByDeviceCode(request.getDeviceCode())) {
+            throw new IllegalArgumentException("이미 존재하는 Device ID입니다: " + request.getDeviceCode());
         }
         
         // DeviceModel 조회
@@ -122,7 +122,7 @@ public class DeviceService {
         
         // Device 생성
         Device device = Device.builder()
-                .deviceId(request.getDeviceId())
+                .deviceCode(request.getDeviceCode())
                 .deviceName(request.getDeviceName())
                 .deviceModel(deviceModel)
                 .status(request.getStatus() != null ? request.getStatus() : "STANDBY")
@@ -140,7 +140,7 @@ public class DeviceService {
                 .build();
         
         device = deviceRepository.save(device);
-        log.info("장비 생성: {} ({})", device.getDeviceName(), device.getDeviceId());
+        log.info("장비 생성: {} ({})", device.getDeviceName(), device.getDeviceCode());
         
         return toDto(device);
     }
@@ -154,11 +154,11 @@ public class DeviceService {
                 .orElseThrow(() -> new IllegalArgumentException("장비를 찾을 수 없습니다: " + id));
         
         // Device ID 변경 시 중복 체크
-        if (!device.getDeviceId().equals(request.getDeviceId())) {
-            if (deviceRepository.existsByDeviceId(request.getDeviceId())) {
-                throw new IllegalArgumentException("이미 존재하는 Device ID입니다: " + request.getDeviceId());
+        if (!device.getDeviceCode().equals(request.getDeviceCode())) {
+            if (deviceRepository.existsByDeviceCode(request.getDeviceCode())) {
+                throw new IllegalArgumentException("이미 존재하는 Device ID입니다: " + request.getDeviceCode());
             }
-            device.setDeviceId(request.getDeviceId());
+            device.setDeviceCode(request.getDeviceCode());
         }
         
         // DeviceModel 변경 시
@@ -183,7 +183,7 @@ public class DeviceService {
         device.setEnabled(request.getEnabled());
         
         device = deviceRepository.save(device);
-        log.info("장비 수정: {} ({})", device.getDeviceName(), device.getDeviceId());
+        log.info("장비 수정: {} ({})", device.getDeviceName(), device.getDeviceCode());
         
         return toDto(device);
     }
@@ -203,7 +203,7 @@ public class DeviceService {
         }
         
         deviceRepository.delete(device);
-        log.info("장비 삭제: {} ({})", device.getDeviceName(), device.getDeviceId());
+        log.info("장비 삭제: {} ({})", device.getDeviceName(), device.getDeviceCode());
     }
     
     /**
@@ -266,7 +266,8 @@ public class DeviceService {
 
         List<DeviceByCategoryDTO> deviceDTOS = devices.stream().map(device->{
             DeviceByCategoryDTO dto = DeviceByCategoryDTO.builder()
-                    .deviceId(device.getDeviceId())
+                    .id(device.getId())
+                    .deviceCode(device.getDeviceCode())
                     .deviceName(device.getDeviceName())
                     .build();
             // DeviceModel 정보
@@ -305,7 +306,7 @@ public class DeviceService {
     private DeviceDTO toDto(Device device) {
         DeviceDTO dto = DeviceDTO.builder()
                 .id(device.getId())
-                .deviceId(device.getDeviceId())
+                .deviceCode(device.getDeviceCode())
                 .deviceName(device.getDeviceName())
                 .status(device.getStatus())
                 .online(device.getOnline())
@@ -363,7 +364,6 @@ public class DeviceService {
      */
     private DevicePlacementDTO toPlacementDto(DevicePlacement placement) {
         return DevicePlacementDTO.builder()
-                .id(placement.getId())
                 .deviceId(placement.getDevice().getId())
                 .positionX(placement.getPositionX())
                 .positionY(placement.getPositionY())

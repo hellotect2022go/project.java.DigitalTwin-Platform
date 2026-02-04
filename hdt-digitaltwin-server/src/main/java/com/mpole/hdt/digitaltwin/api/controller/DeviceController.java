@@ -69,10 +69,10 @@ public class DeviceController {
      * Device ID로 장비 조회
      * GET /api/devices/code/{deviceId}
      */
-    @GetMapping("/code/{deviceId}")
-    public ResponseEntity<ApiResponse<DeviceDTO>> getDeviceByDeviceId(@PathVariable String deviceId) {
-        log.info("장비 조회: deviceId={}", deviceId);
-        DeviceDTO device = service.getDeviceByDeviceId(deviceId);
+    @GetMapping("/code/{deviceCode}")
+    public ResponseEntity<ApiResponse<DeviceDTO>> getDeviceByDeviceId(@PathVariable String deviceCode) {
+        log.info("장비 조회: deviceId={}", deviceCode);
+        DeviceDTO device = service.getDeviceByDeviceCode(deviceCode);
         return ResponseEntity.ok(ApiResponse.success("조회 성공", device));
     }
     
@@ -108,7 +108,7 @@ public class DeviceController {
     public ResponseEntity<ApiResponse<DeviceDTO>> createDevice(
             @Valid @RequestBody DeviceRequest request) {
         log.info("장비 생성: deviceId={}, deviceName={}", 
-                request.getDeviceId(), request.getDeviceName());
+                request.getDeviceCode(), request.getDeviceName());
         DeviceDTO device = service.createDevice(request);
         return ResponseEntity.ok(ApiResponse.success("생성 성공", device));
     }
@@ -121,7 +121,7 @@ public class DeviceController {
     public ResponseEntity<ApiResponse<DeviceDTO>> updateDevice(
             @PathVariable Long id,
             @Valid @RequestBody DeviceRequest request) {
-        log.info("장비 수정: id={}, deviceId={}", id, request.getDeviceId());
+        log.info("장비 수정: id={}, deviceCode={}", id, request.getDeviceCode());
         DeviceDTO device = service.updateDevice(id, request);
         return ResponseEntity.ok(ApiResponse.success("수정 성공", device));
     }

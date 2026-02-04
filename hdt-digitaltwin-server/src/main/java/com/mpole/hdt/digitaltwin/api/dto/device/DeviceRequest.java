@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 @Builder
 public class DeviceRequest {
     
-    private String deviceId;
+    private String deviceCode;
     private String deviceName;
     private Long deviceModelId;  // 필수: DeviceModel 선택
     private String status;

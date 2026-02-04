@@ -10,7 +10,8 @@ import lombok.*;
 public class DeviceByCategoryDTO {
     
     // Device 기본 정보
-    private String deviceId;
+    private Long id;
+    private String deviceCode;
     private String deviceName;
 
     // DeviceModel 정보

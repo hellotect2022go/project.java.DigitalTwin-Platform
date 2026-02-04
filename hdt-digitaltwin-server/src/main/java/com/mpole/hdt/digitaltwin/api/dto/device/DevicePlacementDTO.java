@@ -10,8 +10,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class DevicePlacementDTO {
-    
-    private Long id;
+
     private Long deviceId;
     
     // Position

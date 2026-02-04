@@ -13,7 +13,7 @@ public class DeviceDTO {
     
     // Device 기본 정보
     private Long id;
-    private String deviceId;
+    private String deviceCode;
     private String deviceName;
     private String status;
     private Boolean online;
