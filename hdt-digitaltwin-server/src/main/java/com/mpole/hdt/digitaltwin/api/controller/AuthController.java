@@ -108,7 +108,7 @@ public class AuthController {
      */
     @PostMapping("/change-password")
     public ResponseEntity<ApiResponse<Void>> changePassword(
-            @AuthenticationPrincipal String loginId,
+            @AuthenticationPrincipal(expression = "loginId") String loginId,
             @Valid @RequestBody ChangePasswordRequest request) {
         log.info("비밀번호 변경 요청: {}", loginId);
         

@@ -167,7 +167,6 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다");
         }
         refreshTokenService.deleteRefreshToken(loginId, deviceId);
-        log.info("🔓 로그아웃 완료: {} (기기: {})", loginId, deviceId);
     }
 
     /**
