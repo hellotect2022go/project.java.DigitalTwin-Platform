@@ -148,8 +148,11 @@ public class RefreshTokenService {
      */
     @Transactional
     public void deleteRefreshToken(String loginId, String deviceId) {
-        refreshTokenRepository.deleteByLoginIdAndDeviceId(loginId, deviceId);
-        log.info("🔓 로그아웃: {} (기기: {})", loginId, deviceId);
+        int result = refreshTokenRepository.deleteByLoginIdAndDeviceId(loginId, deviceId);
+        if (result < 1) {
+            throw new IllegalArgumentException("해당 기기는 이미 로그아웃 처리되었습니다.");
+        }
+        log.info("🔓 로그아웃 완료: {} (기기: {})", loginId, deviceId);
     }
 
     /**
@@ -167,7 +170,7 @@ public class RefreshTokenService {
      */
     @Transactional
     public void revokeDevice(String loginId, String deviceId) {
-        refreshTokenRepository.deleteByLoginIdAndDeviceId(loginId, deviceId);
+        int a = refreshTokenRepository.deleteByLoginIdAndDeviceId(loginId, deviceId);
         log.warn("❌ 기기 세션 강제 종료: {} (기기: {})", loginId, deviceId);
     }
 

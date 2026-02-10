@@ -29,7 +29,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     /**
      * 로그인 ID + 디바이스 ID로 삭제
      */
-    void deleteByLoginIdAndDeviceId(String loginId, String deviceId);
+    int deleteByLoginIdAndDeviceId(String loginId, String deviceId);
 
     /**
      * 로그인 ID로 모든 토큰 삭제 (모든 기기에서 로그아웃)
