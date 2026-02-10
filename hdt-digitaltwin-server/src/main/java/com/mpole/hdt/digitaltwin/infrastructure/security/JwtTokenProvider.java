@@ -128,7 +128,8 @@ public class JwtTokenProvider {
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("토큰 검증 실패: {}", e.getMessage());
-            return false;
+            throw new IllegalArgumentException(e.getMessage());
+            //return false;
         }
     }
     
