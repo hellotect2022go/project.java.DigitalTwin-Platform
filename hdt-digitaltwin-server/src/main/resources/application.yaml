@@ -60,6 +60,20 @@ spring:
       max-request-size: 100MB   # 최대 요청 크기
       file-size-threshold: 2KB  # 메모리에 저장할 임계값
 
+  kafka:
+    bootstrap-servers: 192.168.250.249:9092
+    consumer:
+      group-id: hdt-dt-server
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
+hdt:
+  kafka:
+    topics:
+      telemetry-raw: hdt-telemetry-raw
+
 # 파일 업로드 경로 설정
 file:
   upload:
