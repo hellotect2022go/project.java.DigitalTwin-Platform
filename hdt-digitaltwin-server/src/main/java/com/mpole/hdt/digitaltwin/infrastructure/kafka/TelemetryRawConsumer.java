@@ -6,6 +6,7 @@ import com.mpole.hdt.digitaltwin.application.telemetry.TelemetryRaw;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class TelemetryRawConsumer {
     private final ObjectMapper objectMapper;
     private final TelemetryIngestService ingestService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @KafkaListener(
             topics = "${hdt.kafka.topics.telemetry-raw}",
@@ -24,6 +26,8 @@ public class TelemetryRawConsumer {
 
             TelemetryRaw raw = objectMapper.readValue(message, TelemetryRaw.class);
             ingestService.ingest(raw);
+
+            messagingTemplate.convertAndSend("/sub/digitaltwin/all", message);
         } catch (Exception e) {
             log.error("Kafka message parse/ingest failed. payload={}", message, e);
         }
