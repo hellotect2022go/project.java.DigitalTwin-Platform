@@ -105,6 +105,13 @@ public class DeviceService {
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<DeviceDTO> searchDevicesByLocation(String floor, String zone) {
+        return deviceRepository.searchByLocation(floor, zone).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
     
     /**
      * 장비 생성
@@ -245,9 +252,7 @@ public class DeviceService {
         placement.setScaleZ(request.getScaleZ() != null ? request.getScaleZ() : 1.0f);
         
         placement.setFloorLevel(request.getFloorLevel());
-        placement.setLayerName(request.getLayerName());
-        placement.setParentObject(request.getParentObject());
-        placement.setGameObjectName(request.getGameObjectName());
+        placement.setZone(request.getZone());
         placement.setCustomAttributes(request.getCustomAttributes());
         placement.setEnabled(request.getEnabled() != null ? request.getEnabled() : true);
         
@@ -255,6 +260,11 @@ public class DeviceService {
         log.info("장비 배치 정보 저장: deviceId={}", request.getDeviceId());
         
         return toPlacementDto(placement);
+    }
+
+    @Transactional
+    public void deletePlacement(List<Long> deviceIds) {
+        deviceRepository.deleteAllById(deviceIds);
     }
 
     /**
@@ -375,9 +385,7 @@ public class DeviceService {
                 .scaleY(placement.getScaleY())
                 .scaleZ(placement.getScaleZ())
                 .floorLevel(placement.getFloorLevel())
-                .layerName(placement.getLayerName())
-                .parentObject(placement.getParentObject())
-                .gameObjectName(placement.getGameObjectName())
+                .zone(placement.getZone())
                 .customAttributes(placement.getCustomAttributes())
                 .enabled(placement.getEnabled())
                 .createdBy(placement.getCreatedBy())

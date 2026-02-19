@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Device Controller
@@ -86,6 +87,20 @@ public class DeviceController {
         log.info("모델별 장비 조회: deviceModelId={}", deviceModelId);
         List<DeviceDTO> devices = service.getDevicesByModel(deviceModelId);
         return ResponseEntity.ok(ApiResponse.success("조회 성공", devices));
+    }
+
+    /**
+     * 층/위치 별 장비 조회
+     * POST /api/devices/model
+     */
+    @GetMapping("/searchByLocation")
+    public ResponseEntity<ApiResponse<List<DeviceDTO>>> searchDevicesByLocation(
+            @RequestParam(required = false) String floor,    // 층 필터
+            @RequestParam(required = false) String zone // 위치 필터
+    ) {
+        log.info("위치 & 층 별 장비 검색: floor={}, zone={}", floor, zone);
+        List<DeviceDTO> devices = service.searchDevicesByLocation(floor,zone);
+        return ResponseEntity.ok(ApiResponse.success("검색 성공", devices));
     }
     
     /**
@@ -165,6 +180,18 @@ public class DeviceController {
         request.setDeviceId(deviceId);
         DevicePlacementDTO placement = service.savePlacement(request);
         return ResponseEntity.ok(ApiResponse.success("저장 성공", placement));
+    }
+
+    /**
+     * 장비 배치 정보 삭제
+     * PUT /api/devices/{deviceId}/placement
+     */
+    @DeleteMapping("/placement")
+    public ResponseEntity<ApiResponse> deletePlacement(@RequestBody Map<String, List<Long>> request) {
+        List<Long> deviceIds = request.get("deviceIds");
+        log.info("장비 배치 정보 저장: deviceIds={}", deviceIds);
+        service.deletePlacement(deviceIds);
+        return ResponseEntity.ok(ApiResponse.success("삭제 성공 성공"));
     }
 
     /**

@@ -70,6 +70,14 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
            "d.deviceName LIKE %:keyword% OR " +
            "d.location LIKE %:keyword%")
     List<Device> searchByKeyword(@Param("keyword") String keyword);
+
+    @Query("""
+            SELECT d FROM Device d
+            JOIN FETCH d.placement dp
+            WHERE (:floor IS NULL OR dp.floorLevel LIKE %:floor%)
+            AND (:zone IS NULL OR dp.zone LIKE %:zone%)
+            """)
+    List<Device> searchByLocation(@Param("floor") String floor, @Param("zone") String location);
     
     /**
      * DeviceModel + 상태별 조회
