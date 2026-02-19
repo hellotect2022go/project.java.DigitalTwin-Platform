@@ -16,11 +16,13 @@ import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class HttpEventPublisher<T> implements EventPublisher<T> {
 
-    @Qualifier("eventServerWebClient")
     private final WebClient webClient;
+
+    public HttpEventPublisher(@Qualifier("eventServerWebClient") WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     @Override
     public Mono<Void> publish(StandardEnvelope<T> envelope) {

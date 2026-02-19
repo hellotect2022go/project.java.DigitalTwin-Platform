@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: hdt-event-server
+  kafka:
+    bootstrap-servers: 192.168.250.249:9092 # 카프카 서버 주소
+    consumer:
+      group-id: hdt-event-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serialization.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.mpole.hdt.*" # 패키지 신뢰 설정
 
 management:
   endpoint:
