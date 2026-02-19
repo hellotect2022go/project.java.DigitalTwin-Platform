@@ -4,12 +4,31 @@ server:
 spring:
   application:
     name: hdt-gateway-server
+  # [추가] 통합SI DB 접속 정보 (PollingAdapter용)
+  datasource:
+    driver-class-name: org.postgresql.Driver # MS-SQL 예시
+    url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core
+    username: testuser
+    password: 1q2w3e
+#  datasource:
+#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver # MS-SQL 예시
+#    url: jdbc:sqlserver://192.168.10.1:1433;databaseName=SI_DB;encrypt=true;trustServerCertificate=true
+#    username: sa
+#    password: your_password
+  kafka:
+    bootstrap-servers: 192.168.250.249:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+        max.request.size: 4194304
 
 management:
-  endpoint:
+  endpoints:
     web:
       exposure:
-        include: health, info
+        include: info, metrics, health, mappings
 
 # 통합SI 테이터 호출 URL
 external:
@@ -20,3 +39,8 @@ external:
 internal:
   event:
     base-url: "http://localhost:8081"
+
+hdt:
+  kafka:
+    topic:
+      raw: hdt-telemetry-raw
