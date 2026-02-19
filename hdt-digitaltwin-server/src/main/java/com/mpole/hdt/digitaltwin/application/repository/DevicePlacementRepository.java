@@ -27,15 +27,7 @@ public interface DevicePlacementRepository extends JpaRepository<DevicePlacement
      */
     List<DevicePlacement> findByFloorLevel(String floorLevel);
     
-    /**
-     * Layer별 조회
-     */
-    List<DevicePlacement> findByLayerName(String layerName);
-    
-    /**
-     * 부모 오브젝트별 조회
-     */
-    List<DevicePlacement> findByParentObject(String parentObject);
+
     
     /**
      * 활성화된 Placement만 조회

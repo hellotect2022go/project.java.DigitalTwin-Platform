@@ -92,23 +92,8 @@ public class DevicePlacement extends DateEntity {
     @Column(name = "floor_level", length = 50)
     private String floorLevel;
 
-    /**
-     * Unity Layer 이름
-     */
-    @Column(name = "layer_name", length = 50)
-    private String layerName;
-
-    /**
-     * 부모 GameObject 경로 (예: "Building/Floor1/MachineRoom")
-     */
-    @Column(name = "parent_object", length = 200)
-    private String parentObject;
-
-    /**
-     * Unity GameObject 이름
-     */
-    @Column(name = "game_object_name", length = 100)
-    private String gameObjectName;
+    @Column(name = "zone", length = 50)
+    private String zone;
 
     // ========================================
     // 추가 메타데이터

@@ -30,9 +30,7 @@ public class DevicePlacementDTO {
     
     // Unity 구조 정보
     private String floorLevel;
-    private String layerName;
-    private String parentObject;
-    private String gameObjectName;
+    private String zone;
     
     // 메타데이터
     private Map<String, Object> customAttributes;
