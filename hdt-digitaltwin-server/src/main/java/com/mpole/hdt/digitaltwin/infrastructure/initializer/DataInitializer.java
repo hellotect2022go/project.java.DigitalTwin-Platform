@@ -1,22 +1,30 @@
-package com.mpole.hdt.digitaltwin.infrastructure.config;
+package com.mpole.hdt.digitaltwin.infrastructure.initializer;
 
 import com.mpole.hdt.digitaltwin.application.repository.*;
 import com.mpole.hdt.digitaltwin.application.repository.entity.*;
+import com.mpole.hdt.digitaltwin.application.repository.sop.*;
+import com.mpole.hdt.digitaltwin.application.repository.user.*;
+import com.mpole.hdt.digitaltwin.application.repository.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final UserRepository userRepository;
+    private final UserRepo userRepo;
+    private final RoleRepo roleRepo;
+
     private final PasswordEncoder passwordEncoder;
+
     
     // SOP 관련 Repository
     private final SopTemplateRepository sopTemplateRepository;
@@ -27,86 +35,132 @@ public class DataInitializer implements CommandLineRunner {
     private final SopItemRepository sopItemRepository;
     private final SopItemOptionRepository sopItemOptionRepository;
 
+    private final MenuDataCreate menuDataCreate;
+
     @Override
     public void run(String... args) {
+        initializeRole(); // 사용자 권한 초기화
         initializeUsers(); // 사용자 초기화
         initializeSopSampleData(); // SOP 샘플 데이터 초기화
+
+        menuDataCreate.initializeMenus();
+        menuDataCreate.initializeRoleMenu();
     }
 
+    private void initializeRole() {
+        if (roleRepo.count() > 0) {
+            log.info("권한 데이타가 이미 존재합니다. 초기화를 건너띕니다.");
+            return;
+        }
+        List<Role> roleList = new ArrayList<>();
+        roleList.add(Role.builder().roleName("ADMIN").description("관리자").build());
+        roleList.add(Role.builder().roleName("MANAGER").description("매니저").build());
+        roleList.add(Role.builder().roleName("USER").description("일반 사용자").build());
+        roleList.add(Role.builder().roleName("VIEWER").description("뷰어").build());
+
+        roleRepo.saveAll(roleList);
+    }
+
+    private List<Map<String,String>> USERS_DUMMY_DATA = List.of(
+            Map.of("role","ADMIN", "loginId","admin","username","시스템관리자"),
+            Map.of("role","MANAGER", "loginId","manager","username","운영 매니저"),
+            Map.of("role","USER", "loginId","unity","username","Unity 테스트")
+    );
+
     private void initializeUsers() {
-        if (userRepository.count() > 0) {
+        if (userRepo.count() > 0) {
             log.info("사용자 데이터가 이미 존재합니다. 초기화를 건너뜁니다.");
             return;
         }
-
         log.info("===== 테스트 사용자 데이터 초기화 시작 =====");
-
-        // 관리자 계정
-        User admin = User.builder()
-                .loginId("admin")
-                .password(passwordEncoder.encode("1q2w3e"))
-                .email("dhhan@mpole.co.kr")
-                .name("시스템 관리자")
-                .role(UserRole.ROLE_ADMIN)
-                .enabled(true)
-                .accountNonLocked(true)
-                .failedLoginAttempts(0)
-                .lastPasswordChangeDate(LocalDateTime.now())
-                .createdAt(LocalDateTime.now())
-                .build();
-        userRepository.save(admin);
-
-        // 매니저 계정
-        User manager = User.builder()
-                .loginId("manager")
-                .password(passwordEncoder.encode("1q2w3e"))
-                .email("dhhan@mpole.co.kr")
-                .name("운영 매니저")
-                .role(UserRole.ROLE_MANAGER)
-                .enabled(true)
-                .accountNonLocked(true)
-                .failedLoginAttempts(0)
-                .lastPasswordChangeDate(LocalDateTime.now())
-                .createdAt(LocalDateTime.now())
-                .build();
-        userRepository.save(manager);
-
-        // Unity 테스트 계정
-        User unityUser = User.builder()
-                .loginId("unity")
-                .password(passwordEncoder.encode("1q2w3e"))
-                .email("dhhan@mpole.co.kr")
-                .name("Unity 테스트")
-                .role(UserRole.ROLE_USER)
-                .enabled(true)
-                .accountNonLocked(true)
-                .failedLoginAttempts(0)
-                .lastPasswordChangeDate(LocalDateTime.now())
-                .createdAt(LocalDateTime.now())
-                .build();
-        userRepository.save(unityUser);
-
-        // 비밀번호 만료 테스트 계정 (90일 이전에 변경)
-        User expiredUser = User.builder()
-                .loginId("expired")
-                .password(passwordEncoder.encode("1q2w3e"))
-                .email("expired@hanadream.com")
-                .name("만료 테스트")
-                .role(UserRole.ROLE_USER)
-                .enabled(true)
-                .accountNonLocked(true)
-                .failedLoginAttempts(0)
-                .lastPasswordChangeDate(LocalDateTime.now().minusDays(91))
-                .createdAt(LocalDateTime.now())
-                .build();
-        userRepository.save(expiredUser);
-
-        log.info("===== 테스트 사용자 {} 건 초기화 완료 =====", userRepository.count());
         log.info("테스트 계정:");
-        log.info("  - admin / 1q2w3e (관리자)");
-        log.info("  - manager / 1q2w3e (매니저)");
-        log.info("  - unity / 1q2w3e (일반 사용자)");
-        log.info("  - expired / 1q2w3e (비밀번호 만료 테스트)");
+        USERS_DUMMY_DATA.forEach(map->{
+
+            String role_ = map.get("role");
+            String loginId = map.get("loginId");
+            String username = map.get("username");
+
+            Role role = roleRepo.findByRoleName(role_)
+                    .orElseThrow(() -> new RuntimeException(role_ +" 권한을 찾을 수 없습니다."));
+
+            User user = User.builder()
+                    .loginId(loginId)
+                    .passwordHash(passwordEncoder.encode("1q2w3e"))
+                    .email(loginId+"@mpole.co.kr")
+                    .username(username)
+                    .active(true)
+                    .build();
+
+            UserRole userRole = UserRole.builder().user(user).role(role).build();
+            user.getUserRoles().add(userRole);
+            userRepo.save(user);
+            log.info("  - {}/ 1q2w3e (관리자)",loginId);
+        });
+//        Users admin = Users.builder()
+//                .loginId("admin")
+//                .password(passwordEncoder.encode("1q2w3e"))
+//                .email("dhhan@mpole.co.kr")
+//                .name("시스템 관리자")
+//                .role(UserRole.ROLE_ADMIN)
+//                .enabled(true)
+//                .accountNonLocked(true)
+//                .failedLoginAttempts(0)
+//                .lastPasswordChangeDate(LocalDateTime.now())
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//        userRepository.save(admin);
+//
+//        // 매니저 계정
+//        Users manager = Users.builder()
+//                .loginId("manager")
+//                .password(passwordEncoder.encode("1q2w3e"))
+//                .email("dhhan@mpole.co.kr")
+//                .name("운영 매니저")
+//                .role(UserRole.ROLE_MANAGER)
+//                .enabled(true)
+//                .accountNonLocked(true)
+//                .failedLoginAttempts(0)
+//                .lastPasswordChangeDate(LocalDateTime.now())
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//        userRepository.save(manager);
+//
+//        // Unity 테스트 계정
+//        Users unityUser = Users.builder()
+//                .loginId("unity")
+//                .password(passwordEncoder.encode("1q2w3e"))
+//                .email("dhhan@mpole.co.kr")
+//                .name("Unity 테스트")
+//                .role(UserRole.ROLE_USER)
+//                .enabled(true)
+//                .accountNonLocked(true)
+//                .failedLoginAttempts(0)
+//                .lastPasswordChangeDate(LocalDateTime.now())
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//        userRepository.save(unityUser);
+
+//        // 비밀번호 만료 테스트 계정 (90일 이전에 변경)
+//        Users expiredUser = Users.builder()
+//                .loginId("expired")
+//                .password(passwordEncoder.encode("1q2w3e"))
+//                .email("expired@hanadream.com")
+//                .name("만료 테스트")
+//                .role(UserRole.ROLE_USER)
+//                .enabled(true)
+//                .accountNonLocked(true)
+//                .failedLoginAttempts(0)
+//                .lastPasswordChangeDate(LocalDateTime.now().minusDays(91))
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//        userRepository.save(expiredUser);
+//
+//        log.info("===== 테스트 사용자 {} 건 초기화 완료 =====", userRepository.count());
+//        log.info("테스트 계정:");
+//        log.info("  - admin / 1q2w3e (관리자)");
+//        log.info("  - manager / 1q2w3e (매니저)");
+//        log.info("  - unity / 1q2w3e (일반 사용자)");
+//        log.info("  - expired / 1q2w3e (비밀번호 만료 테스트)");
     }
     
     /**
