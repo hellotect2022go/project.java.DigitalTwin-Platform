@@ -2,9 +2,11 @@ package com.mpole.hdt.digitaltwin.application.repository;
 
 import com.mpole.hdt.digitaltwin.application.repository.entity.DevicePlacement;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +54,13 @@ public interface DevicePlacementRepository extends JpaRepository<DevicePlacement
             @Param("minY") Float minY, @Param("maxY") Float maxY,
             @Param("minZ") Float minZ, @Param("maxZ") Float maxZ
     );
-    
+
+
+    @Modifying
+    @Transactional
+    @Query("delete from DevicePlacement e where e.device.id in :deviceIds")
+    void deleteAllByDeviceIdIn(@Param("deviceIds") List<Long> deviceIds);
+
     /**
      * Device 삭제 시 Placement도 함께 삭제
      */

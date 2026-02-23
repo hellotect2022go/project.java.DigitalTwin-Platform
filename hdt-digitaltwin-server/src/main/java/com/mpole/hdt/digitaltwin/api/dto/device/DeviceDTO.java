@@ -59,5 +59,7 @@ public class DeviceDTO {
     private String updatedBy;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
+
+    private boolean set;
 }
 

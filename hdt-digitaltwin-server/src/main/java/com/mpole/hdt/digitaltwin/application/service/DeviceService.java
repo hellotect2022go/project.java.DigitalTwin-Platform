@@ -264,7 +264,7 @@ public class DeviceService {
 
     @Transactional
     public void deletePlacement(List<Long> deviceIds) {
-        deviceRepository.deleteAllById(deviceIds);
+        placementRepository.deleteAllByDeviceIdIn(deviceIds);
     }
 
     /**
@@ -315,6 +315,7 @@ public class DeviceService {
      */
     private DeviceDTO toDto(Device device) {
         DeviceDTO dto = DeviceDTO.builder()
+                .set(false)
                 .id(device.getId())
                 .deviceCode(device.getDeviceCode())
                 .deviceName(device.getDeviceName())
@@ -364,7 +365,10 @@ public class DeviceService {
         
         // Placement 정보 (있는 경우)
         placementRepository.findByDevice_Id(device.getId())
-                .ifPresent(placement -> dto.setPlacement(toPlacementDto(placement)));
+                .ifPresent(placement -> {
+                    dto.setSet(true);
+                    dto.setPlacement(toPlacementDto(placement));
+                });
         
         return dto;
     }
