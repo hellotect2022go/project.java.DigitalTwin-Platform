@@ -1,7 +1,7 @@
 package com.mpole.hdt.digitaltwin.application.service;
 
-import com.mpole.hdt.digitaltwin.application.repository.UserRepository;
-import com.mpole.hdt.digitaltwin.application.repository.entity.User;
+import com.mpole.hdt.digitaltwin.application.repository.user.User;
+import com.mpole.hdt.digitaltwin.application.repository.user.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserLockService {
 
-    private final UserRepository userRepository;
-    private static final int MAX_FAILED_ATTEMPTS = 5;
+    private final UserRepo userRepo;
+    private static final int MAX_FAILED_ATTEMPTS = 1000000;
 
     /**
      * 로그인 실패 처리 (독립적인 새로운 트랜잭션)
@@ -37,7 +37,7 @@ public class UserLockService {
             log.info("로그인 실패 횟수 증가: {} ({}회)", user.getLoginId(), user.getFailedLoginAttempts());
         }
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepo.save(user);
         log.debug("DB 저장 완료: failedLoginAttempts={}, accountNonLocked={}", 
                 savedUser.getFailedLoginAttempts(), savedUser.getAccountNonLocked());
     }
@@ -47,12 +47,12 @@ public class UserLockService {
      */
     @Transactional
     public void unlockAccount(String loginId) {
-        User user = userRepository.findByLoginId(loginId)
+        User user = userRepo.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
         user.setAccountNonLocked(true);
         user.resetFailedAttempts();
-        userRepository.save(user);
+        userRepo.save(user);
 
         log.info("✅ 계정 잠금 해제: {}", loginId);
     }

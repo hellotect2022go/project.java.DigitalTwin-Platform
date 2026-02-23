@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,12 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Bean
+    static GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        // 접두사를 빈 문자열("")로 설정하여 ROLE_ 제거
+        return new GrantedAuthorityDefaults("");
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,27 +58,20 @@ public class SecurityConfig {
                                 "/api/auth/signup",         // 회원가입
                                 "/api/auth/refresh",        // 토큰 갱신
                                 "/api/auth/health",         // 헬스체크
-                                "/api/digitaltwin/health"   // 헬스체크
-                        ).permitAll()
-                        .requestMatchers(
+                                "/api/digitaltwin/health",   // 헬스체크
+                                "/api/devices/**",
+                                "/api/equipment/categories/**",
+                                "/api/categories/**",
+                                "/api/assets/**",
                                 "/stomp/**",
-                                "/ws/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/*.html",                  // HTML 파일 (개발용)
-                                "/css/**",
-                                "/js/**",
-                                "/images/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/api/equipment/categories/**",  // 장비 카테고리 API (임시 전체 허용)
-                                "/api/categories/**",            // 하이브리드 방식 카테고리 API (임시 전체 허용)
-                                "/api/assets/**"                 // 하이브리드 방식 에셋 API (임시 전체 허용)
+                                "/ws/**",
+                                "/*.html", "/css/**", "/js/**", "/images/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/auth/me",             // 내 정보 조회
                                 "/api/auth/logout",         // 로그아웃
-                                "/api/auth/change-password" // 비밀번호 변경
+                                "/api/auth/change-password", // 비밀번호 변경
+                                "/api/menu/**"
                         ).authenticated()
                         .requestMatchers(
                                 "/api/auth/unlock/**"       // 계정 잠금 해제
@@ -80,8 +80,8 @@ public class SecurityConfig {
                                 "/api/digitaltwin/status",  // 상태 조회
                                 "/api/digitaltwin/data"     // 데이터 조회
                         ).hasAnyRole("ADMIN", "MANAGER", "USER")
-                        //.anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
+                        //.anyRequest().permitAll()
                 )
                 // H2 Console을 위한 Frame 설정
                 .headers(headers -> headers

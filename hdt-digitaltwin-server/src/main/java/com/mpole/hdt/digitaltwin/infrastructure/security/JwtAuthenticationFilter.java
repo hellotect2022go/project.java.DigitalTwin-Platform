@@ -53,12 +53,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
                 String loginId = jwtTokenProvider.getLoginIdFromToken(token);
-                String role = jwtTokenProvider.getRoleFromToken(token);
+                List<String> roles = jwtTokenProvider.getRoleFromToken(token);
                 String deviceId = jwtTokenProvider.getDeviceIdFromToken(token);
 
-                List<SimpleGrantedAuthority> authorities = (role != null)
-                        ? Collections.singletonList(new SimpleGrantedAuthority(role))
-                        : Collections.emptyList(); // 권한이 없으면 빈 리스트
+                List<SimpleGrantedAuthority> authorities = roles.stream().map(SimpleGrantedAuthority::new).toList();
+
+//                List<SimpleGrantedAuthority> authorities = (role != null)
+//                        ? roles.stream().map(SimpleGrantedAuthority::new).toList()
+//                        : Collections.emptyList(); // 권한이 없으면 빈 리스트
 
                 UserPrincipal principal = new UserPrincipal(loginId, deviceId, authorities);
 
@@ -73,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                log.debug("✅ 사용자 인증 완료: {}, 권한: {}", loginId, role);
+                log.info("✅ 사용자 인증 완료: {}, 권한: {}", loginId, roles);
             }
         } catch (Exception e) {
             log.error("❌ 인증 처리 중 오류 발생", e);
