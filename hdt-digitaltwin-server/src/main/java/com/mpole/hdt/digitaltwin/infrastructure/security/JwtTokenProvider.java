@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -30,13 +33,13 @@ public class JwtTokenProvider {
     /**
      * Access Token 생성
      */
-    public String generateAccessToken(String loginId, String role) {
+    public String generateAccessToken(String loginId, List<String> roles) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenExpiration);
         
         return Jwts.builder()
                 .subject(loginId)
-                .claim("role", role)
+                .claim("roles", roles)
                 .claim("type", "access")
                 .issuedAt(now)
                 .expiration(expiryDate)
@@ -72,9 +75,23 @@ public class JwtTokenProvider {
     /**
      * 토큰에서 권한 추출
      */
-    public String getRoleFromToken(String token) {
-        Claims claims = parseToken(token);
-        return claims.get("role", String.class);
+    public List<String> getRoleFromToken(String token) {
+        try {
+            Claims claims = parseToken(token);
+            Object roles = claims.get("roles");
+
+            if (roles instanceof List<?>) {
+                // 리스트의 각 요소를 안전하게 String으로 변환
+                return ((List<?>) roles).stream()
+                        .map(Object::toString)
+                        .collect(Collectors.toList());
+            }
+        } catch (Exception e) {
+            // 토큰 파싱 실패 또는 만료 시 처리 로직
+            log.error("유효하지 않은 토큰입니다.", e);
+        }
+
+        return Collections.emptyList(); // 기본값으로 빈 리스트 반환
     }
 
     /**
@@ -128,7 +145,8 @@ public class JwtTokenProvider {
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("토큰 검증 실패: {}", e.getMessage());
-            return false;
+            throw new IllegalArgumentException(e.getMessage());
+            //return false;
         }
     }
     

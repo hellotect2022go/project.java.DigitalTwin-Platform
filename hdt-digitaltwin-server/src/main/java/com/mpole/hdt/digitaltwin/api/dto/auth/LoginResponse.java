@@ -32,7 +32,7 @@ public class LoginResponse {
         private String loginId;
         private String email;
         private String name;
-        private String role;
+        private List<String> role;
     }
     
     @Data

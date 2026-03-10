@@ -4,9 +4,9 @@ import com.mpole.hdt.digitaltwin.api.dto.auth.ActiveSessionsResponse;
 import com.mpole.hdt.digitaltwin.api.dto.auth.ChangePasswordRequest;
 import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
 import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
-import com.mpole.hdt.digitaltwin.application.repository.UserRepository;
 import com.mpole.hdt.digitaltwin.application.repository.entity.RefreshToken;
-import com.mpole.hdt.digitaltwin.application.repository.entity.User;
+import com.mpole.hdt.digitaltwin.application.repository.user.User;
+import com.mpole.hdt.digitaltwin.application.repository.user.UserRepo;
 import com.mpole.hdt.digitaltwin.infrastructure.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -25,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserLockService userLockService;
@@ -42,7 +44,7 @@ public class AuthService {
         log.info("로그인 시도: {} (기기: {})", request.getLoginId(), getClientIP(httpRequest));
 
         // 1. 사용자 체크
-        User user = userRepository.findByLoginId(request.getLoginId())
+        User user = userRepo.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자명 또는 비밀번호가 올바르지 않습니다"));
 
         // 2. 계정 잠금 확인
@@ -51,19 +53,21 @@ public class AuthService {
         }
 
         // 3. 계정 활성화 확인
-        if (!user.getEnabled()) {
+        if (!user.getActive()) {
             throw new IllegalStateException("비활성화된 계정입니다.");
         }
 
         // 4. 비밀번호 검증
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             userLockService.handleLoginFailure(user);
             throw new IllegalArgumentException("사용자명 또는 비밀번호가 올바르지 않습니다");
         }
 
         // 로그인 성공 처리
         user.resetFailedAttempts();
-        userRepository.save(user);
+        userRepo.save(user);
+
+        List<String> userRoles = user.getUserRoles().stream().map(userRole -> userRole.getRole().getRoleName()).toList();
 
         // 기기 정보 처리
         // deviceId가 없으면 자동 생성
@@ -74,7 +78,7 @@ public class AuthService {
         String deviceType = detectDeviceType(httpRequest);
 
         // 토큰 생성 (관제 시스템용 - 장기 세션)
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getLoginId(), user.getRole().name());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getLoginId(), userRoles);
 
         String ipAddress = getClientIP(httpRequest);
         String refreshToken = refreshTokenService.createRefreshToken(user.getLoginId(), deviceId, deviceName, deviceType, ipAddress);
@@ -97,8 +101,8 @@ public class AuthService {
                 .userInfo(LoginResponse.UserInfo.builder()
                         .loginId(user.getLoginId())
                         .email(user.getEmail())
-                        .name(user.getName())
-                        .role(user.getRole().name())
+                        .name(user.getUsername())
+                        .role(userRoles)
                         .build())
                 .passwordChangeRequired(passwordChangeRequired)
                 .daysUntilPasswordExpiry(daysUntilExpiry)
@@ -127,7 +131,7 @@ public class AuthService {
         RefreshToken validatedToken = refreshTokenService.validateRefreshToken(loginId, deviceId, ipAddress);
 
         // 사용자 조회
-        User user = userRepository.findByLoginId(validatedToken.getLoginId())
+        User user = userRepo.findByLoginId(validatedToken.getLoginId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
         // 계정 상태 확인
@@ -135,13 +139,18 @@ public class AuthService {
             throw new IllegalStateException("계정이 잠겨있습니다. 관리자에게 문의하세요.");
         }
 
-        if (!user.getEnabled()) {
+        if (!user.getActive()) {
             throw new IllegalStateException("비활성화된 계정입니다.");
         }
 
+
+        List<String> userRoles = user.getUserRoles().stream().map(userRole1 -> userRole1.getRole().getRoleName()).toList();
+
         // 새로운 Access Token 생성
-        String newAccessToken = jwtTokenProvider.generateAccessToken(user.getLoginId(), user.getRole().name());
+        String newAccessToken = jwtTokenProvider.generateAccessToken(user.getLoginId(), userRoles);
         log.debug("🔄 토큰 갱신 성공: {} (기기: {})", user.getLoginId(), validatedToken.getDeviceName());
+
+
 
         return LoginResponse.builder()
                 .accessToken(newAccessToken)
@@ -150,8 +159,8 @@ public class AuthService {
                 .userInfo(LoginResponse.UserInfo.builder()
                         .loginId(user.getLoginId())
                         .email(user.getEmail())
-                        .name(user.getName())
-                        .role(user.getRole().name())
+                        .name(user.getUsername())
+                        .role(userRoles)
                         .build())
                 .passwordChangeRequired(user.isPasswordChangeRequired(passwordChangePeriodDays))
                 .daysUntilPasswordExpiry(calculateDaysUntilPasswordExpiry(user))
@@ -167,7 +176,6 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다");
         }
         refreshTokenService.deleteRefreshToken(loginId, deviceId);
-        log.info("🔓 로그아웃 완료: {} (기기: {})", loginId, deviceId);
     }
 
     /**
@@ -208,11 +216,11 @@ public class AuthService {
      */
     @Transactional
     public void changePassword(String loginId, ChangePasswordRequest request) {
-        User user = userRepository.findByLoginId(loginId)
+        User user = userRepo.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 
         // 현재 비밀번호 확인
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
             throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다");
         }
 
@@ -227,9 +235,9 @@ public class AuthService {
         }
 
         // 비밀번호 암호화 및 저장
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         user.updatePasswordChangeDate();
-        userRepository.save(user);
+        userRepo.save(user);
 
         log.info("비밀번호 변경 완료: {}", loginId);
     }
@@ -242,7 +250,7 @@ public class AuthService {
             return 0;
         }
 
-        LocalDateTime expiryDate = user.getLastPasswordChangeDate().plusDays(passwordChangePeriodDays);
+        OffsetDateTime expiryDate = user.getLastPasswordChangeDate().plusDays(passwordChangePeriodDays);
         long daysUntilExpiry = ChronoUnit.DAYS.between(LocalDateTime.now(), expiryDate);
 
         return (int) Math.max(0, daysUntilExpiry);

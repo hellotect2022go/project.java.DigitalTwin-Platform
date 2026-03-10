@@ -7,10 +7,14 @@ spring:
 
   datasource:
     # localhost 부분에는 DB 주소를, digitaltwin 부분에는 생성한 DB 이름을 넣으세요.
-    url: jdbc:postgresql://192.168.5.216:5432/hana_test
+    url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core
+    username: testuser
+    password: 1q2w3e
     driver-class-name: org.postgresql.Driver
-    username: root  # PostgreSQL 설치 시 설정한 사용자명 (보통 postgres)
-    password: example    # 설정한 비밀번호
+#    url: jdbc:postgresql://192.168.5.216:5432/hana_test
+#    driver-class-name: org.postgresql.Driver
+#    username: root  # PostgreSQL 설치 시 설정한 사용자명 (보통 postgres)
+#    password: example    # 설정한 비밀번호
 
   jpa:
     hibernate:
@@ -22,6 +26,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         show_sql: true
+        default_batch_fetch_size: 100 # 보통 100~500 권장
     defer-datasource-initialization: true  # JPA 테이블 생성 후 data.sql 실행
   
   # H2 Database 설정
@@ -67,7 +72,6 @@ spring:
       auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
 
 hdt:
   kafka:
