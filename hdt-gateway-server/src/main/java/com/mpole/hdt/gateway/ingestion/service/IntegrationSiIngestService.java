@@ -43,7 +43,6 @@ import java.util.UUID;
     }
 
     public Mono<Void> ingest(StandardEnvelope<Object> envelope) {
-
         normalizeEnvelope(envelope);
 
         // 들어온 데이터가 추적 가능하도록 보장
@@ -69,6 +68,7 @@ import java.util.UUID;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void normalizeEnvelope(StandardEnvelope envelope) {
+        
         if (envelope == null) return;
         if (envelope.getHeader() == null) return;
         if (envelope.getBody() == null) return;
@@ -82,8 +82,5 @@ import java.util.UUID;
         if (envelope.getHeader().getTimestamp() == null || envelope.getHeader().getTimestamp().trim().isEmpty()) {
             envelope.getHeader().setTimestamp(OffsetDateTime.now().toString());
         }
-
-        // senderId/schemaVersion은 “보정” 대신 “필수로 강제”가 더 안전함
-        // -> validate에서 필수 체크로 걸러짐
     }
 }

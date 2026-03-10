@@ -33,6 +33,9 @@ public class StandardBodyItem {
     // [선택] 알람 여부 (true일 경우 알람 발생)
     private Boolean alarmYn;
 
+    private String systemType;
+    private String pointType;
+
     /**
      * 시스템별 확장 필드
      * - unit

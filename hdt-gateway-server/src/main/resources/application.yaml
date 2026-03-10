@@ -10,11 +10,12 @@ spring:
     url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core
     username: testuser
     password: 1q2w3e
-#  datasource:
-#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver # MS-SQL 예시
-#    url: jdbc:sqlserver://192.168.10.1:1433;databaseName=SI_DB;encrypt=true;trustServerCertificate=true
+    # [수정] 통합 SI 연계용 로컬 MS-SQL 설정
+#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#    url: jdbc:sqlserver://192.168.250.249:1433;databaseName=HDT_SI_DB;encrypt=false;trustServerCertificate=true
 #    username: sa
-#    password: your_password
+#    password: HanaDream!2026
+
   kafka:
     bootstrap-servers: 192.168.250.249:9092
     producer:

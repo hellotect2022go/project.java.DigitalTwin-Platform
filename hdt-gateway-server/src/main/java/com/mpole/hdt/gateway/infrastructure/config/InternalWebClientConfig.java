@@ -18,15 +18,6 @@ import java.util.concurrent.TimeUnit;
 //Event Server로 보내는 용도(=EventForwarder 전용)
 @Configuration
 public class InternalWebClientConfig {
-//    @Bean
-//    public WebClient eventServerWebClient(
-//            @Value("${internal.event.base-url}") String baseUrl
-//    ) {
-//        return WebClient.builder()
-//                .baseUrl(baseUrl)
-//                .build();
-//    }
-
     @Bean(name = "eventServerWebClient")
     public WebClient eventServerWebClient(
             @Value("${hdt.event-server.base-url:http://localhost:8081}") String baseUrl

@@ -31,20 +31,3 @@ public class IngestController {
                 .thenReturn(ResponseEntity.accepted().build());
     }
 }
-
-
-//[통합 SI]
-//        ↓ HTTP
-//        IngestController
-//   ↓
-//IntegrationSiIngestService
-//   - normalize (trxId/timestamp)
-//   - IngestValidator.validate()
-//   - 메트릭: ingest.accept / reject / records
-//   ↓
-//KafkaEventPublisher
-//   - Kafka publish
-//   - Header: X-Trx-Id
-//   - 메트릭: publish.success / fail / latency
-//   ↓
-//Kafka Topic (hdt.telemetry.raw)
