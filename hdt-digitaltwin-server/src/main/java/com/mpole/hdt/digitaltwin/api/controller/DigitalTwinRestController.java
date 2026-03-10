@@ -1,7 +1,7 @@
 package com.mpole.hdt.digitaltwin.api.controller;
 
-import com.mpole.hdt.digitaltwin.api.dto.DigitalTwinDataDto;
-import com.mpole.hdt.digitaltwin.api.dto.DigitalTwinResponseDto;
+import com.mpole.hdt.digitaltwin.api.dto.test.DigitalTwinDataDto;
+import com.mpole.hdt.digitaltwin.api.dto.test.DigitalTwinResponseDto;
 import com.mpole.hdt.digitaltwin.application.service.DigitalTwinMockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,20 +1,39 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   application:
     name: hdt-digitaltwin-server
 
   datasource:
-    # localhost 부분에는 DB 주소를, digitaltwin 부분에는 생성한 DB 이름을 넣으세요.
-    url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core
-    username: testuser
-    password: 1q2w3e
-    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://192.168.5.216:5432/hana_test
-#    driver-class-name: org.postgresql.Driver
-#    username: root  # PostgreSQL 설치 시 설정한 사용자명 (보통 postgres)
-#    password: example    # 설정한 비밀번호
+    #    url: jdbc:postgresql://192.168.5.216:5432/hana_test
+    #    driver-class-name: org.postgresql.Driver
+    #    username: root  # PostgreSQL 설치 시 설정한 사용자명 (보통 postgres)
+    #    password: example    # 설정한 비밀번호
+    primary:
+      # localhost 부분에는 DB 주소를, digitaltwin 부분에는 생성한 DB 이름을 넣으세요.
+      # 이 설정을 추가하면 JdbcTemplate.batchUpdate() 호출 시, 드라이버가 여러 개의 INSERT 문을 하나의 INSERT INTO ... VALUES (...), (...), (...) 형태로 재작성
+          jdbc-url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core&reWriteBatchedStatements=true
+          username: testuser
+          password: 1q2w3e
+          driver-class-name: org.postgresql.Driver
+
+#      jdbc-url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core&reWriteBatchedStatements=true
+#      username: testuser
+#      password: 1q2w3e
+#      driver-class-name: org.postgresql.Driver
+
+    # 연계 DB (MSSQL)
+    mssql:
+      jdbc-url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core&reWriteBatchedStatements=true
+      username: testuser
+      password: 1q2w3e
+      driver-class-name: org.postgresql.Driver
+#      jdbc-url: jdbc:sqlserver://mssql-server:1433;databaseName=legacy_db
+#      username: mssql_user
+#      password: mssql_pass
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
 
   jpa:
     hibernate:
@@ -26,7 +45,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         show_sql: true
-        default_batch_fetch_size: 100 # 보통 100~500 권장
+        default_batch_fetch_size: 1000 # 보통 100~500 권장
     defer-datasource-initialization: true  # JPA 테이블 생성 후 data.sql 실행
   
   # H2 Database 설정
@@ -87,7 +106,8 @@ file:
 # JWT 설정 (관제 시스템 최적화)
 jwt:
   secret: hdt-digitaltwin-secret-key-2026-hanaDream-security-token-key-minimum-256-bits
-  expiration: 1800000              # Access Token: 30분
+  #expiration: 1800000              # Access Token: 30분
+  expiration: 180000000              # Access Token: 3000분
   refresh-expiration: 7776000000   # Refresh Token: 90일
 
 # 비밀번호 정책

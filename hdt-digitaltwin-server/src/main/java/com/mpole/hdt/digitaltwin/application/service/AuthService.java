@@ -4,7 +4,7 @@ import com.mpole.hdt.digitaltwin.api.dto.auth.ActiveSessionsResponse;
 import com.mpole.hdt.digitaltwin.api.dto.auth.ChangePasswordRequest;
 import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
 import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
-import com.mpole.hdt.digitaltwin.application.repository.entity.RefreshToken;
+import com.mpole.hdt.digitaltwin.application.repository.RefreshToken;
 import com.mpole.hdt.digitaltwin.application.repository.user.User;
 import com.mpole.hdt.digitaltwin.application.repository.user.UserRepo;
 import com.mpole.hdt.digitaltwin.infrastructure.security.JwtTokenProvider;

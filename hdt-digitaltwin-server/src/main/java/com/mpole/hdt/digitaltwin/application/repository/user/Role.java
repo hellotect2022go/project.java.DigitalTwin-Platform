@@ -1,7 +1,7 @@
 package com.mpole.hdt.digitaltwin.application.repository.user;
 
 
-import com.mpole.hdt.digitaltwin.application.repository.entity.DateEntity;
+import com.mpole.hdt.digitaltwin.application.repository.DateEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;

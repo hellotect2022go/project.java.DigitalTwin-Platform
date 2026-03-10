@@ -2,7 +2,7 @@ package com.mpole.hdt.digitaltwin.application.service;
 
 import com.mpole.hdt.digitaltwin.api.dto.auth.ActiveSessionsResponse;
 import com.mpole.hdt.digitaltwin.application.repository.RefreshTokenRepository;
-import com.mpole.hdt.digitaltwin.application.repository.entity.RefreshToken;
+import com.mpole.hdt.digitaltwin.application.repository.RefreshToken;
 import com.mpole.hdt.digitaltwin.infrastructure.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

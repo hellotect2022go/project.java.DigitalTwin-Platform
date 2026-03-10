@@ -1,8 +1,7 @@
 package com.mpole.hdt.digitaltwin.application.service;
 
 import com.mpole.hdt.digitaltwin.api.dto.sop.*;
-import com.mpole.hdt.digitaltwin.application.repository.*;
-import com.mpole.hdt.digitaltwin.application.repository.entity.*;
+import com.mpole.hdt.digitaltwin.application.repository.sop.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -504,16 +503,16 @@ public class SopService {
                 .map(this::toStepWithItemsResponse)
                 .collect(Collectors.toList());
 
-        // 3. 현재 선택 결과 조회
-        List<SopItemResultResponse> itemResults = itemResultRepository.findByInstance_Id(instanceId).stream()
-                .map(this::toItemResultResponse)
-                .collect(Collectors.toList());
-
-        // 4. Step 상태 평가 (자동 활성화 계산)
-        List<SopStepStatusResponse> stepStatuses = evaluateInstanceStatuses(instanceId);
+//        // 3. 현재 선택 결과 조회
+//        List<SopItemResultResponse> itemResults = itemResultRepository.findByInstance_Id(instanceId).stream()
+//                .map(this::toItemResultResponse)
+//                .collect(Collectors.toList());
+//
+//        // 4. Step 상태 평가 (자동 활성화 계산)
+//        List<SopStepStatusResponse> stepStatuses = evaluateInstanceStatuses(instanceId);
 
         // 5. 완료 가능 여부 체크
-        boolean canComplete = canCompleteInstance(instanceId);
+        //boolean canComplete = canCompleteInstance(instanceId);
 
         return SopInstanceFullResponse.builder()
                 .id(instance.getId())
@@ -528,9 +527,9 @@ public class SopService {
                 .eventType(template.getEventType())
                 .templateVersion(template.getVersion())
                 .steps(stepResponses)
-                .itemResults(itemResults)
-                .stepStatuses(stepStatuses)
-                .canComplete(canComplete)
+//                .itemResults(itemResults)
+//                .stepStatuses(stepStatuses)
+                //.canComplete(canComplete)
                 .build();
     }
 

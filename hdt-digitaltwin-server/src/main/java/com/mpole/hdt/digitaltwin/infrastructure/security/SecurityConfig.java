@@ -63,9 +63,12 @@ public class SecurityConfig {
                                 "/api/equipment/categories/**",
                                 "/api/categories/**",
                                 "/api/assets/**",
+                                "/api/patrol/**",
+                                "/api/device-view/**",
                                 "/stomp/**",
                                 "/ws/**",
-                                "/*.html", "/css/**", "/js/**", "/images/**"
+                                "/*.html", "/css/**", "/js/**", "/images/**",
+                                "/api/device/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/auth/me",             // 내 정보 조회

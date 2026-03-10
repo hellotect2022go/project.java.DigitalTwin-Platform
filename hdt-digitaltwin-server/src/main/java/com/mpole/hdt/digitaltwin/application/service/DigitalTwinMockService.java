@@ -1,6 +1,6 @@
 package com.mpole.hdt.digitaltwin.application.service;
 
-import com.mpole.hdt.digitaltwin.api.dto.DigitalTwinDataDto;
+import com.mpole.hdt.digitaltwin.api.dto.test.DigitalTwinDataDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
