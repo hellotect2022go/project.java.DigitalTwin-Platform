@@ -1,16 +1,10 @@
 package com.mpole.hdt.digitaltwin.api.controller;
 
 import com.mpole.hdt.digitaltwin.api.dto.ApiResponse;
-import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
-import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
-import com.mpole.hdt.digitaltwin.application.repository.device.Device;
-import com.mpole.hdt.digitaltwin.application.repository.device.DevicePoint;
-import com.mpole.hdt.digitaltwin.application.repository.device.DeviceRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
+import com.mpole.hdt.digitaltwin.persistence.device.Device;
+import com.mpole.hdt.digitaltwin.persistence.device.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.shaded.com.google.protobuf.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

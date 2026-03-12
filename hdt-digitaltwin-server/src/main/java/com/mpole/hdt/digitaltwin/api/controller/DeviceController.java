@@ -5,15 +5,14 @@ import com.mpole.hdt.digitaltwin.api.dto.Location.LocationResponse;
 import com.mpole.hdt.digitaltwin.api.dto.device.ChangeDevicePlacementRequest;
 import com.mpole.hdt.digitaltwin.api.dto.device.DeviceCategoryDTO;
 import com.mpole.hdt.digitaltwin.api.dto.device.DeviceDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DevicePlacementDTO;
-import com.mpole.hdt.digitaltwin.application.service.DeviceCategoryService;
-import com.mpole.hdt.digitaltwin.application.service.DeviceService;
-import com.mpole.hdt.digitaltwin.application.service.SyncService;
-import com.mpole.hdt.digitaltwin.infrastructure.external.mssql.model.ExternalMSViewEntity;
-import com.mpole.hdt.digitaltwin.infrastructure.external.mssql.repository.MssqlRepository;
+import com.mpole.hdt.digitaltwin.api.dto.device.DevicePlacementResponse;
+import com.mpole.hdt.digitaltwin.external.model.ExternalMSViewEntity;
+import com.mpole.hdt.digitaltwin.external.repository.MssqlRepository;
+import com.mpole.hdt.digitaltwin.service.DeviceCategoryService;
+import com.mpole.hdt.digitaltwin.service.DeviceService;
+import com.mpole.hdt.digitaltwin.service.SyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.shaded.com.google.protobuf.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,8 +106,8 @@ public class DeviceController {
     // 장비 배치 정보 관련된 API 항목들
     // ========================================
     @PutMapping("/placement")
-    public ResponseEntity<ApiResponse<DevicePlacementDTO>> saveDevicesPlacement(@RequestBody ChangeDevicePlacementRequest request) {
-        DevicePlacementDTO device = deviceService.savePlacementInfo(request);
+    public ResponseEntity<ApiResponse<DevicePlacementResponse>> saveDevicesPlacement(@RequestBody ChangeDevicePlacementRequest request) {
+        DevicePlacementResponse device = deviceService.savePlacementInfo(request);
         return ResponseEntity.ok(ApiResponse.success("장비 배치정보 업데이트",device));
     }
 

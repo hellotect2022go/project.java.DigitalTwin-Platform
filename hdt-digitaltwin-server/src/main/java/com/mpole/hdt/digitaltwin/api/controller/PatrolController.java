@@ -1,21 +1,17 @@
 package com.mpole.hdt.digitaltwin.api.controller;
 
-import com.mpole.hdt.digitaltwin.application.repository.menu.Menu;
-import com.mpole.hdt.digitaltwin.application.repository.menu.MenuRepo;
-import com.mpole.hdt.digitaltwin.application.repository.menu.MenuResponse;
-import com.mpole.hdt.digitaltwin.application.repository.menu.RoleMenuRepo;
-import com.mpole.hdt.digitaltwin.application.repository.patrol.*;
+import com.mpole.hdt.digitaltwin.persistence.patrol.PatrolRouteRepo;
+import com.mpole.hdt.digitaltwin.persistence.patrol.PatrolRouteResponse;
+import com.mpole.hdt.digitaltwin.persistence.patrol.PatrolWaypointRepo;
+import com.mpole.hdt.digitaltwin.persistence.patrol.PatrolWaypointResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j

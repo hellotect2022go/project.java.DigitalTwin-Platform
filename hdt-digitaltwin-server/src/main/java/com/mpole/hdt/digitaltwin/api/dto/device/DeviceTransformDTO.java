@@ -1,6 +1,6 @@
 package com.mpole.hdt.digitaltwin.api.dto.device;
 
-import com.mpole.hdt.digitaltwin.application.repository.device.DeviceTransform;
+import com.mpole.hdt.digitaltwin.persistence.device.DeviceTransform;
 
 public record DeviceTransformDTO(
         Long transformId,

@@ -10,7 +10,7 @@ spring:
     #    driver-class-name: org.postgresql.Driver
     #    username: root  # PostgreSQL 설치 시 설정한 사용자명 (보통 postgres)
     #    password: example    # 설정한 비밀번호
-    primary:
+    main:
       # localhost 부분에는 DB 주소를, digitaltwin 부분에는 생성한 DB 이름을 넣으세요.
       # 이 설정을 추가하면 JdbcTemplate.batchUpdate() 호출 시, 드라이버가 여러 개의 INSERT 문을 하나의 INSERT INTO ... VALUES (...), (...), (...) 형태로 재작성
           jdbc-url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core&reWriteBatchedStatements=true
@@ -24,7 +24,7 @@ spring:
 #      driver-class-name: org.postgresql.Driver
 
     # 연계 DB (MSSQL)
-    mssql:
+    external:
       jdbc-url: jdbc:postgresql://192.168.250.249:5432/hdt?currentSchema=core&reWriteBatchedStatements=true
       username: testuser
       password: 1q2w3e

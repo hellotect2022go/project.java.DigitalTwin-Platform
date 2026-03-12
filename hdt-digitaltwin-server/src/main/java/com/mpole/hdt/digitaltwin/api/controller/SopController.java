@@ -2,7 +2,7 @@ package com.mpole.hdt.digitaltwin.api.controller;
 
 import com.mpole.hdt.digitaltwin.api.dto.ApiResponse;
 import com.mpole.hdt.digitaltwin.api.dto.sop.*;
-import com.mpole.hdt.digitaltwin.application.service.SopService;
+import com.mpole.hdt.digitaltwin.service.SopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

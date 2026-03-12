@@ -11,28 +11,21 @@ import java.util.List;
 /**
  * 활성 세션(기기) 조회 응답
  */
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ActiveSessionsResponse {
-    
-    private int totalCount;
-    private List<SessionInfo> sessions;
-    
-    @Data
+public record ActiveSessionsResponse(
+        int totalCount,
+        List<SessionInfo> sessions
+) {
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SessionInfo {
-        private String deviceId;
-        private String deviceName;
-        private String deviceType;
-        private String ipAddress;
-        private LocalDateTime lastUsedAt;
-        private LocalDateTime expiresAt;
-        private boolean current;  // 현재 세션 여부
-    }
+    public record SessionInfo(
+            String deviceId,
+            String deviceName,
+            String deviceType,
+            String ipAddress,
+            LocalDateTime lastUsedAt,
+            LocalDateTime expiresAt,
+            boolean current
+    ) {}
 }
 
 
