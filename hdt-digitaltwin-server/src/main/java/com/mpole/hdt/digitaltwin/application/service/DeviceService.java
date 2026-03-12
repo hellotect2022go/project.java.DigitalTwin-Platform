@@ -3,17 +3,14 @@ package com.mpole.hdt.digitaltwin.application.service;
 import com.mpole.hdt.digitaltwin.api.dto.Location.LocFloorDTO;
 import com.mpole.hdt.digitaltwin.api.dto.Location.LocZoneDTO;
 import com.mpole.hdt.digitaltwin.api.dto.Location.LocationResponse;
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceLocationDTO;
-import com.mpole.hdt.digitaltwin.api.dto.device.DeviceTransformDTO;
+import com.mpole.hdt.digitaltwin.api.dto.device.*;
+//import com.mpole.hdt.digitaltwin.api.dto.device.bak.DeviceLocationDTO;
+//import com.mpole.hdt.digitaltwin.api.dto.device.bak.DeviceTransformDTO;
 import com.mpole.hdt.digitaltwin.application.repository.device.Device;
 import com.mpole.hdt.digitaltwin.application.repository.device.DeviceCategory;
 import com.mpole.hdt.digitaltwin.application.repository.device.DeviceRepository;
 import com.mpole.hdt.digitaltwin.application.repository.device.DeviceTransform;
-import com.mpole.hdt.digitaltwin.application.repository.location.LocBuilding;
-import com.mpole.hdt.digitaltwin.application.repository.location.LocBuildingRepository;
-import com.mpole.hdt.digitaltwin.application.repository.location.LocFloor;
-import com.mpole.hdt.digitaltwin.application.repository.location.LocZone;
+import com.mpole.hdt.digitaltwin.application.repository.location.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +26,9 @@ public class DeviceService {
 
     private final DeviceRepository deviceRepository;
     private final LocBuildingRepository locBuildingRepository;
+    private final LocFloorRepository locFloorRepository;
+    private final LocZoneRepository locZoneRepository;
+    private final LocZoneDetailRepository locZoneDetailRepository;
 
     @Transactional(readOnly = true)
     public Long getAllDevicesCnt() {
@@ -39,6 +39,12 @@ public class DeviceService {
     @Transactional(readOnly = true)
     public List<DeviceDTO> getAllDevices() {
         return deviceRepository.fetchAllDevices().stream().map(this::toDto).toList();
+    }
+
+    // 특정 장치 정보 조회
+    @Transactional(readOnly = true)
+    public DeviceDTO getTargetDevice(Long deviceId) {
+        return deviceRepository.findById(deviceId).map(this::toDto).get();
     }
 
     // 장치 목록 검색
@@ -93,6 +99,50 @@ public class DeviceService {
         }).toList();
     }
 
+    @Transactional
+    public DevicePlacementDTO savePlacementInfo(ChangeDevicePlacementRequest request) {
+        Device device = deviceRepository.fetchDeviceById(request.deviceId());
+
+        if (device.getDeviceTransform() == null) {
+            device.setDeviceTransform(new DeviceTransform());
+        }
+
+        device.getDeviceTransform().setPosX(request.posX());
+        device.getDeviceTransform().setPosY(request.posY());
+        device.getDeviceTransform().setPosZ(request.posZ());
+        device.getDeviceTransform().setRotX(request.rotX());
+        device.getDeviceTransform().setRotY(request.rotY());
+        device.getDeviceTransform().setRotZ(request.rotZ());
+        device.getDeviceTransform().setScaleX(request.scaleX());
+        device.getDeviceTransform().setScaleY(request.scaleY());
+        device.getDeviceTransform().setScaleZ(request.scaleZ());
+
+        // location 정보 삽입
+        if (request.locBuildingId() != null) {
+            device.setLocBuilding(locBuildingRepository.getReferenceById(request.locBuildingId()));        }
+        if (request.locFloorId() != null) {
+            device.setLocFloor(locFloorRepository.getReferenceById(request.locFloorId()));
+        }
+        if (request.locZoneId() != null) {
+            device.setLocZone(locZoneRepository.getReferenceById(request.locZoneId()));
+        }
+        if (request.locZoneDetailId() != null) {
+            device.setLocZoneDetail(locZoneDetailRepository.getReferenceById(request.locZoneDetailId()));
+        }
+
+        return DevicePlacementDTO.from(device);
+    }
+
+    @Transactional
+    public void deletePlacementInfo(List<Long> deviceIds) {
+        List<Device> devices = deviceRepository.findAllById(deviceIds);
+        for (Device device : devices) {
+            device.removeTransform();
+            device.removeLocInfo();
+        }
+    }
+
+
     private DeviceDTO toDto(Device device) {
         DeviceDTO deviceDTO = DeviceDTO.builder()
                 .deviceId(device.getDeviceId())
@@ -125,43 +175,12 @@ public class DeviceService {
         }
 
         // 디바이스 transform 관련
-        if (device.getDeviceTransform() != null) {
-            DeviceTransform deviceTransform = device.getDeviceTransform();
-            DeviceTransformDTO transform = DeviceTransformDTO.builder()
-                    .locationId(deviceTransform.getTransformId())
-                    .positionX(deviceTransform.getPosX())
-                    .positionY(deviceTransform.getPosY())
-                    .positionZ(deviceTransform.getPosZ())
-                    .rotationX(deviceTransform.getRotX())
-                    .rotationY(deviceTransform.getRotY())
-                    .rotationZ(deviceTransform.getRotZ())
-                    .scaleX(deviceTransform.getScaleX())
-                    .scaleY(deviceTransform.getScaleY())
-                    .scaleZ(deviceTransform.getScaleZ())
-                    .build();
+        DeviceTransformDTO transform = DeviceTransformDTO.from(device.getDeviceTransform());
+        deviceDTO.setTransform(transform);
+        deviceDTO.setSet(transform != null);
 
-            deviceDTO.setSet(true);
-            deviceDTO.setTransform(transform);
-        }
-
-        DeviceLocationDTO deviceLocationDTO = DeviceLocationDTO.builder().build();
-        if (device.getLocBuilding() !=null) {
-            deviceLocationDTO.setBuildingId(device.getLocBuilding().getBuildingId());
-            deviceLocationDTO.setBuildingName(device.getLocBuilding().getName());
-        }
-        if (device.getLocFloor() !=null) {
-            deviceLocationDTO.setFloorId(device.getLocFloor().getFloorId());
-            deviceLocationDTO.setFloorName(device.getLocFloor().getName());
-        }
-        if (device.getLocZone() !=null) {
-            deviceLocationDTO.setZoneId(device.getLocZone().getZoneId());
-            deviceLocationDTO.setZoneName(device.getLocZone().getName());
-        }
-        if (device.getLocZoneDetail() !=null) {
-            deviceLocationDTO.setZoneDetailId(device.getLocZoneDetail().getZoneDetailId());
-            deviceLocationDTO.setZoneDetailName(device.getLocZoneDetail().getName());
-        }
-        deviceDTO.setLocation(deviceLocationDTO);
+        // 디바이스 로케이션 관련
+        deviceDTO.setLocation(DeviceLocationDTO.from(device));
 
 
 

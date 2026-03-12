@@ -54,6 +54,7 @@ public class SecurityConfig {
                         //.requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/actuator/**").permitAll()  // 운영 시 hasRole('ADMIN')으로 변경
                         .requestMatchers(
+                                "/api/test",
                                 "/api/auth/login",          // 로그인
                                 "/api/auth/signup",         // 회원가입
                                 "/api/auth/refresh",        // 토큰 갱신

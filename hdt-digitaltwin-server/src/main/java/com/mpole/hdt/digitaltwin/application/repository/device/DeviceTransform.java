@@ -23,10 +23,11 @@ public class DeviceTransform extends DateEntity {
     @Comment("공간 배치 고유 ID")
     private Long transformId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_id", nullable = false, unique = true)
-    @Comment("참조 장비 ID")
-    private Device device;
+    //@OneToOne(fetch = FetchType.LAZY, mappedBy = "deviceTransform")
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "device_id", nullable = false, unique = true)
+//    @Comment("참조 장비 ID")
+//    private Device device;
 
 
     // ========================================

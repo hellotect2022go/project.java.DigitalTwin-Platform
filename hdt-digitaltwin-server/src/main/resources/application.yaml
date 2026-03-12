@@ -85,12 +85,21 @@ spring:
       file-size-threshold: 2KB  # 메모리에 저장할 임계값
 
   kafka:
-    bootstrap-servers: 192.168.250.249:9092
+    #bootstrap-servers: 192.168.250.249:9092
+    bootstrap-servers: 192.168.250.180:9092
+    #listener:
+      #type: batch # 배치 리스너 활성화
     consumer:
-      group-id: hdt-dt-server
+      #group-id: hdt-dt-server
       auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      max-poll-records: 1 # 한번에 1000개씩 땡겨옴
+      fetch-min-size: 1048576
+      fetch-max-wait: 1000ms
+      properties:
+        max.partition.fetch.bytes: 10485760 # 10MB
 
 hdt:
   kafka:

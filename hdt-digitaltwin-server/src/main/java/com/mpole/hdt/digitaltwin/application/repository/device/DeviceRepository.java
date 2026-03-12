@@ -17,6 +17,17 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             LEFT JOIN FETCH d.locBuilding
             LEFT JOIN FETCH d.locFloor
             LEFT JOIN FETCH d.locZone
+            LEFT JOIN FETCH d.locZoneDetail
+            WHERE d.deviceId = :deviceId 
+            """)
+    Device fetchDeviceById(@Param("deviceId") Long deviceId);
+
+    @Query("""
+            SELECT d FROM Device d
+            LEFT JOIN FETCH d.deviceTransform
+            LEFT JOIN FETCH d.locBuilding
+            LEFT JOIN FETCH d.locFloor
+            LEFT JOIN FETCH d.locZone
             LEFT JOIN FETCH d.locZoneDetail 
             ORDER BY d.deviceId ASC
             """)
@@ -47,4 +58,11 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             ORDER BY d.deviceId ASC
             """)
     List<Device> fetchTargetCategoryDevices(@Param("categoryId") Integer categoryId);
+
+
+    @Query("""
+            SELECT d FROM Device d
+            LEFT JOIN FETCH d.devicePoints
+            """)
+    List<Device> fetchDeviceWithPoints();
 }

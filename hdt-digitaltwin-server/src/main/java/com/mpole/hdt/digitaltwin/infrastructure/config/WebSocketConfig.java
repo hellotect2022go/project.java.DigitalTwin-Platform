@@ -22,6 +22,13 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    @Override
+    public void configureWebSocketTransport(org.springframework.web.socket.config.annotation.WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(50 * 1024 * 1024);      // 최대 메시지 크기: 50MB
+        registration.setSendBufferSizeLimit(50 * 1024 * 1024);   // 전송 버퍼 크기: 50MB
+        registration.setSendTimeLimit(20 * 1000);               // 전송 시간 제한: 20초
+    }
+
     /**
      * STOMP 엔드포인트 등록
      * Unity에서 연결할 WebSocket 엔드포인트 설정

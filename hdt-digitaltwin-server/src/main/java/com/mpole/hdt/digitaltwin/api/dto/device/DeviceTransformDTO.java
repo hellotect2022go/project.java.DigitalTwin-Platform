@@ -1,35 +1,30 @@
 package com.mpole.hdt.digitaltwin.api.dto.device;
 
-import lombok.*;
+import com.mpole.hdt.digitaltwin.application.repository.device.DeviceTransform;
 
-import java.util.Map;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class DeviceTransformDTO {
-
-    private Long locationId;
-    
-    // Position
-    private Float positionX;
-    private Float positionY;
-    private Float positionZ;
-    
-    // Rotation
-    private Float rotationX;
-    private Float rotationY;
-    private Float rotationZ;
-    
-    // Scale
-    private Float scaleX;
-    private Float scaleY;
-    private Float scaleZ;
-
-    private Boolean enabled;
-    private String createdBy;
-    private String updatedBy;
+public record DeviceTransformDTO(
+        Long transformId,
+        // Position
+        Float posX,
+        Float posY,
+        Float posZ,
+        // Rotation
+         Float rotX,
+         Float rotY,
+         Float rotZ,
+        // Scale
+         Float scaleX,
+         Float scaleY,
+         Float scaleZ
+)
+{
+    public static DeviceTransformDTO from(DeviceTransform transform){
+        if (transform == null) return null;
+        return new DeviceTransformDTO(
+                transform.getTransformId(),
+                transform.getPosX(),transform.getPosY(),transform.getPosZ(),
+                transform.getRotX(),transform.getRotY(),transform.getRotZ(),
+                transform.getScaleX(),transform.getScaleY(),transform.getScaleZ()
+        );
+    }
 }
-

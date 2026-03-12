@@ -8,6 +8,8 @@ import com.mpole.hdt.digitaltwin.application.repository.location.LocZoneDetail;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +76,9 @@ public class Device extends DateEntity {
     @Comment("솔루션 정보 참조 (ADAM, VMS, 등등)")
     private DeviceSolution deviceSolution;
 
-    @OneToOne(mappedBy = "device", fetch = FetchType.LAZY)
+    //@OneToOne(mappedBy = "device", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "transform_id", unique = true)
     private DeviceTransform deviceTransform;
 
     // ======================================
@@ -96,7 +100,19 @@ public class Device extends DateEntity {
     @JoinColumn(name = "zone_detail_id")
     private LocZoneDetail locZoneDetail;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "device")
+    private List<DevicePoint> devicePoints;
 
+    // 정보 삭제 (Delete)
+    public void removeTransform() {
+        this.deviceTransform = null;
+    }
+    public void removeLocInfo() {
+        this.locBuilding = null;
+        this.locFloor = null;
+        this.locZone = null;
+        this.locZoneDetail = null;
+    }
 
     
 }

@@ -1,22 +1,25 @@
 package com.mpole.hdt.digitaltwin.api.dto.device;
 
-import lombok.*;
+import com.mpole.hdt.digitaltwin.application.repository.device.Device;
+import com.mpole.hdt.digitaltwin.application.repository.device.DeviceTransform;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class DeviceLocationDTO {
-    private Long buildingId;
-    private String buildingName;
-
-    private Long floorId;
-    private String floorName;
-
-    private Long zoneId;
-    private String zoneName;
-
-    private Long zoneDetailId;
-    private String zoneDetailName;
+public record DeviceLocationDTO(
+        Long buildingId, String buildingName,
+        Long floorId, String floorName,
+        Long zoneId, String zoneName,
+        Long zoneDetailId, String zoneDetailName
+)
+{
+    public static DeviceLocationDTO from(Device device){
+        return new DeviceLocationDTO(
+                device.getLocBuilding() != null ? device.getLocBuilding().getBuildingId() : null,
+                device.getLocBuilding() != null ? device.getLocBuilding().getName() : null,
+                device.getLocFloor() != null ? device.getLocFloor().getFloorId() : null,
+                device.getLocFloor() != null ? device.getLocFloor().getName() : null,
+                device.getLocZone() != null ? device.getLocZone().getZoneId() : null,
+                device.getLocZone() != null ? device.getLocZone().getName() : null,
+                device.getLocZoneDetail() != null ? device.getLocZoneDetail().getZoneDetailId() : null,
+                device.getLocZoneDetail() != null ? device.getLocZoneDetail().getName() : null
+        );
+    }
 }
