@@ -14,6 +14,7 @@ public record ChangeDevicePlacementRequest(
         Long locBuildingId,
         Long locFloorId,
         Long locZoneId,
-        Long locZoneDetailId
+        Long locZoneDetailId,
+        String description
 ) {
 }

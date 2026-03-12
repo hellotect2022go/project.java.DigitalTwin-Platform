@@ -102,11 +102,12 @@ public class DeviceService {
     @Transactional
     public DevicePlacementDTO savePlacementInfo(ChangeDevicePlacementRequest request) {
         Device device = deviceRepository.fetchDeviceById(request.deviceId());
+        // 장비 상세 위치
+        device.setDescription(request.description());
 
         if (device.getDeviceTransform() == null) {
             device.setDeviceTransform(new DeviceTransform());
         }
-
         device.getDeviceTransform().setPosX(request.posX());
         device.getDeviceTransform().setPosY(request.posY());
         device.getDeviceTransform().setPosZ(request.posZ());
