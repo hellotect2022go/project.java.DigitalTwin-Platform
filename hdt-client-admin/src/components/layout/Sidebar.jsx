@@ -1,10 +1,29 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { SvgIcons } from "../common/Icon";
+import { menuData } from "@/constants/menuData";
 
 const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed(!isCollapsed); // 사이드바 확장/축소
+
+    const SidebarMenu = ({ isCollapsed }) => {
+      return (
+        <MenuContainer>
+          {menuData.map((section, idx) => (
+            <div key={idx}>
+              <CategoryTitle>{isCollapsed ? section.abbr : section.label}</CategoryTitle>
+              {section.items.map((item, itemIdx) => (
+                <MenuItem key={itemIdx} title={isCollapsed ? item.title : ""}>
+                  {item.icon}
+                  <MenuText $isCollapsed={isCollapsed}>{item.title}</MenuText>
+                </MenuItem>
+              ))}
+            </div>
+          ))}
+        </MenuContainer>
+      );
+    };
 
     return (
         <SidebarContainer $isCollapsed={isCollapsed}>
@@ -38,6 +57,9 @@ const Sidebar = () => {
                 )}
                 <Divider />
             </ProfileSection>
+
+            {/* 3. 메뉴 영역 */}
+            <SidebarMenu isCollapsed={isCollapsed}/>
 
         </SidebarContainer>
     )
@@ -146,6 +168,53 @@ const Divider = styled.div`
   height: 1px;
   background-color: rgba(255, 255, 255, 0.1);
   margin-top: 20px;
+`;
+
+//  메뉴 관련 style 들 
+const MenuContainer = styled.nav`
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+  
+  /* 스크롤바 커스텀 */
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+`;
+
+const CategoryTitle = styled.div`
+  padding: 16px 24px 8px;
+  font-size: 12px;
+  color: #566a7f; /* 흐린 회색 */
+  text-transform: uppercase;
+  white-space: nowrap;    /* 절대 줄바꿈 안 함 */
+  text-overflow: ellipsis; /* 넘치는 부분은 ... 처리 (보험용) */
+  width: 100%;
+`;
+
+const MenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: #a6adb4;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  svg {
+    font-size: 20px;
+    min-width: 24px;
+  }
+`;
+
+const MenuText = styled.span`
+  margin-left: 12px;
+  font-size: 14px;
+  white-space: nowrap;
+  display: ${props => props.$isCollapsed ? 'none' : 'block'};
 `;
 
 export default Sidebar;
