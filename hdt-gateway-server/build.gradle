@@ -48,6 +48,8 @@ dependencies {
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc' // MS-SQL 드라이버 (통합SI DB가 MS-SQL일 경우)
     runtimeOnly 'org.postgresql:postgresql'
 
+    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
