@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
   useEffect(() => {
@@ -7,12 +8,15 @@ function App() {
   }, []);
 
   return (
-    <div 
-      style={{fontFamily:"NotoSansKR"}}
-      >
-      HELLO
-    </div>
-  )
+    // <ThemeProvider>
+    //   <AuthProvider>
+    //     <ModalProvider>
+    //       <GlobalStyle/>
+          <AppRouter/>
+    //     {/* </ModalProvider>  
+    //   </AuthProvider>  
+    // </ThemeProvider> */}
+    )
 }
 
 export default App
