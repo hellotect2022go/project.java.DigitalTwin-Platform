@@ -3,11 +3,13 @@ import styled from "styled-components";
 import loginBg from '@/assets/image/loginBg.jpg'
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import { useModal } from "@/contexts/ModalContext";
 
 const LoginPage = () => {
     const navigate = useNavigate()
 
     const {login} = useAuth()
+    const {openModal} = useModal()
     const [formData, setFormData] = useState({loginId:"", password:""})
 
     const handleChange = (e) => {
@@ -27,8 +29,7 @@ const LoginPage = () => {
                 password: formData.password,
             });
 
-            alert("로그인 성공!!")
-            navigate("/test")
+            openModal({title:"로그인", content:"로그인 성공!", onConfirm:()=> navigate("/test")})
         }catch (err) {
             console.error("Login Error:",err)
             alert("로그인 정보가 올바르지 않습니다.")
