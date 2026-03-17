@@ -26,6 +26,7 @@ const LayoutWrapper = styled.div`
 
 const ContentArea = styled.main`
   flex: 1;
+  display: flex;
   padding: 20px;
   background-color: var(--bg-color);
 `;

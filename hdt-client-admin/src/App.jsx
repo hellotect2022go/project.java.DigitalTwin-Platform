@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import AppRouter from "./routes/AppRouter";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ModalProvider } from "./contexts/ModalContext";
+import { RecentHistoryProvider } from "./contexts/SidebarHistoryContext";
 
 function App() {
   useEffect(() => {
@@ -16,7 +17,9 @@ function App() {
     //       <GlobalStyle/>
     <ModalProvider>
       <AuthProvider>
-        <AppRouter/>
+        <RecentHistoryProvider>
+          <AppRouter/>
+        </RecentHistoryProvider>
       </AuthProvider>
     </ModalProvider>
     //     {/* </ModalProvider>  

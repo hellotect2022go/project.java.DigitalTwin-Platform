@@ -9,6 +9,9 @@
 /* 2. 기본 폰트로 설정 */
 :root {
   font-family: 'NotoSansKR', sans-serif; /* 폰트를 못 불러올 경우를 대비해 sans-serif 추가 */
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 [data-theme='classic'] {
@@ -28,6 +31,8 @@ body {
   -webkit-font-smoothing: antialiased; /* 폰트를 더 부드럽게 출력 (선택 사항) */
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
+  height: 100%;
+  padding: 0;
 }
 
 /* 3. 입력창 등 폰트 상속이 안 되는 요소들 강제 적용 */

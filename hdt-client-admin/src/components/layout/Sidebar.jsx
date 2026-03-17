@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIcons } from "../common/Icon";
 import { menuData } from "@/constants/menuData";
 import { useAuth } from "@/contexts/AuthContext";
+import {useSidebarHistory } from "@/contexts/SidebarHistoryContext";
 
 const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed(!isCollapsed); // 사이드바 확장/축소
-    const {user} = useAuth()
+    const { user } = useAuth();
+    const { addSidebarHistory } = useSidebarHistory();
 
     const SidebarMenu = ({ isCollapsed }) => {
       return (
@@ -16,7 +19,12 @@ const Sidebar = () => {
             <div key={idx}>
               <CategoryTitle>{isCollapsed ? section.abbr : section.label}</CategoryTitle>
               {section.items.map((item, itemIdx) => (
-                <MenuItem key={itemIdx} title={isCollapsed ? item.title : ""}>
+                <MenuItem
+                  key={itemIdx}
+                  to={item.path}
+                  title={isCollapsed ? item.title : ""}
+                  onClick={() => addSidebarHistory(item.path, item.title)}
+                >
                   {item.icon}
                   <MenuText $isCollapsed={isCollapsed}>{item.title}</MenuText>
                 </MenuItem>
@@ -176,6 +184,8 @@ const Divider = styled.div`
 const MenuContainer = styled.nav`
   flex: 1;
   overflow-y: auto;
+  width: 100%;
+  overflow-x: hidden;
   padding: 12px 0;
   
   /* 스크롤바 커스텀 */
@@ -193,17 +203,23 @@ const CategoryTitle = styled.div`
   width: 100%;
 `;
 
-const MenuItem = styled.div`
+const MenuItem = styled(NavLink)`
   display: flex;
   align-items: center;
   padding: 12px 24px;
   cursor: pointer;
   color: #a6adb4;
   transition: all 0.2s;
+  text-decoration: none;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
     color: #fff;
+  }
+
+  &.active {
+    background-color: rgba(0, 209, 178, 0.15);
+    color: #00d1b2;
   }
 
   svg {

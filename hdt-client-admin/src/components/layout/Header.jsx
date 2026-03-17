@@ -1,26 +1,43 @@
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIcons } from "../common/Icon";
 import { useAuth } from "@/contexts/AuthContext";
 import { useModal } from "@/contexts/ModalContext";
+import { useSidebarHistory } from "@/contexts/SidebarHistoryContext";
 
 const Header = () => {
-
-    const {logout} = useAuth()
-    const {openModal} = useModal()
+    const navigate = useNavigate();
+    const { logout } = useAuth();
+    const { openModal } = useModal();
+    const { sidebarHistory, removeSidebarHistory } = useSidebarHistory();
 
     const handleLogout = () => {
-        openModal({title:"로그아웃",content:"로그아웃 합니까? ",onConfirm:logout})
-        //logout()
-    }
+        openModal({ title: "로그아웃", content: "로그아웃 합니까? ", onConfirm: logout });
+    };
 
     return (
     <HeaderContainer>
+      {/* 최근 방문 이력 */}
+      
+      <RecentHistoryArea>
+        {sidebarHistory.map((item,index) => (
+          <RecentHistoryBtn key={`${item.path}-${item.label}`} to={item.path}>
+            <div>{item.label}</div>
+            <div style={{fontSize:"10px"}} onClick={(e)=>{
+              e.preventDefault();
+              e.stopPropagation();
+              removeSidebarHistory(item.path);
+            }}>X</div>
+          </RecentHistoryBtn>
+        ))}
+      </RecentHistoryArea>
+
       {/* 왼쪽: 탭 영역 */}
-      <TabArea>
+      {/* <TabArea>
         <TabItem>사용자탭 ×</TabItem>
         <TabItem $active>기본정보 ×</TabItem>
         <TabItem>사용자탭 ×</TabItem>
-      </TabArea>
+      </TabArea> */}
 
       {/* 오른쪽: 시스템 정보 영역 */}
       <SystemArea>
@@ -59,20 +76,48 @@ const HeaderContainer = styled.header`
   padding: 0 20px;
 `;
 
-const TabArea = styled.div`
+const RecentHistoryArea = styled.div`
   display: flex;
-  gap: 4px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-right: 16px;
+  &::-webkit-scrollbar { display: none; } /* 스크롤바 숨기기 (선택) */
 `;
 
-const TabItem = styled.div`
+const RecentHistoryBtn = styled(NavLink)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   padding: 6px 12px;
-  font-size: 13px;
-  background-color: ${props => props.$active ? '#4a69bd' : '#f1f2f6'};
-  color: ${props => props.$active ? '#ffffff' : '#595959'};
+  gap: 8px;
+  font-size: 12px;
+  text-decoration: none; /* NavLink 기본 밑줄 제거 */
+  background-color: #F2F2F2;
+  color : #8E8E8E;
   border-radius: 4px 4px 0 0;
   cursor: pointer;
   white-space: nowrap;
+  &.active {
+    background-color:#4A6380;
+    color: #ffffff;
+  }
+  &:hover {
+    background: #4A6380;
+    color: #ffffff;
+  }
 `;
+
+const RecentHistoryLabel = styled.span`
+  font-size: 12px;
+  color: #566a7f;
+  white-space: nowrap;
+`;
+
+
+
+
 
 const SystemArea = styled.div`
   display: flex;
