@@ -2,10 +2,12 @@ import { useState } from "react";
 import styled from "styled-components";
 import { SvgIcons } from "../common/Icon";
 import { menuData } from "@/constants/menuData";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed(!isCollapsed); // 사이드바 확장/축소
+    const {user} = useAuth()
 
     const SidebarMenu = ({ isCollapsed }) => {
       return (
@@ -48,7 +50,7 @@ const Sidebar = () => {
                 <>
                     <UserInfo>
                         <NameText>
-                            김하나 <span>과장</span>
+                            {user.name} <span>과장</span>
                         </NameText>
                         <TeamBadge>유지보수팀</TeamBadge>
                     </UserInfo>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // 환경변수를 통한 base_url 설정
-const API_BASE_URL  = "http://192.168.10.218:8083"
+const API_BASE_URL  = "http://192.168.10.218:8083/api"
 
 // 1. 인증이 필요 없는 공통 인스턴스 (로그인, 회원가입 등)
 export const publicApi = axios.create({

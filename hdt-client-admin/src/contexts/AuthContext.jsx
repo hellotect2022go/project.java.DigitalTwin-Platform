@@ -21,12 +21,12 @@ export const AuthProvider = ({children}) => {
     },[]);
 
     const login = async (credential) => {
-        const res = await publicApi.post('/auth/login', credentials);
-        const { accessToken, refreshToken, user } = res.data;
+        const res = await publicApi.post('/auth/login', credential);
+        const { accessToken, refreshToken, userInfo } = res.data.data;
     
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        setUser(user);
+        setUser(userInfo);
     }
 
     const logout = () => {

@@ -1,7 +1,16 @@
 import styled from "styled-components";
 import { SvgIcons } from "../common/Icon";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
+
+    const {logout} = useAuth()
+
+    const handleLogout = () => {
+        alert("로그아웃 합니까? 모달창으로 대체 ")
+        logout()
+    }
+
     return (
     <HeaderContainer>
       {/* 왼쪽: 탭 영역 */}
@@ -27,7 +36,7 @@ const Header = () => {
           <span>☀️ 맑음 19°C</span>
         </StatusInfo>
 
-        <LogoutButton onClick={()=>alert("로그아웃 할거임? 아직은 alert 로 곧 modal 로 대체할 예정임")}>
+        <LogoutButton onClick={()=>handleLogout()}>
           {/* <FiLogOut /> 로그아웃 */}
           <SvgIcons.Logout width={24} height={24}/>
           로그아웃
