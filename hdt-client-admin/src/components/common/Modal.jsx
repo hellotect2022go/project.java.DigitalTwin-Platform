@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { SvgIcons } from "./Icon";
 
 const Modal = ({config , onClose }) => {
   const { isOpen, title, content, onConfirm } = config;
@@ -7,6 +8,7 @@ const Modal = ({config , onClose }) => {
   return (
     <Backdrop onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
+        <div style={{display:"flex", justifyContent:"flex-end"}} onClick={onClose}><SvgIcons.Cross/></div>
         <ModalHeader>{title}</ModalHeader>
         <ModalBody>{content}</ModalBody>
         <ModalFooter>
@@ -35,29 +37,36 @@ const Backdrop = styled.div`
 `;
 const ModalContainer = styled.div`
   background: white; 
-  padding: 24px; 
+  padding: 16px 20px 16px 20px; 
   border-radius: 8px; 
   min-width: 320px;
 `;
 const ModalHeader = styled.h2` 
+    display: flex;
+    justify-content: center;
     margin: 0 0 16px 0; 
     font-size: 1.25rem; 
 `;
 const ModalBody = styled.div`
- margin-bottom: 24px; 
- color: #4b5563; 
- line-height: 1.5;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px; 
+  color: #4b5563; 
+  line-height: 1.5;
 `;
 const ModalFooter = styled.div`
  display: flex; 
- justify-content: flex-end; 
+ justify-content: center; 
  gap: 8px; 
 `;
 const Button = styled.button`
   padding: 8px 16px; 
   border-radius: 4px; 
   border: none; 
+  width: 137px;
+  height: 36px;
   cursor: pointer;
-  background: ${props => props.$primary ? '#009591' : '#e5e7eb'};
+  background: ${props => props.$primary ? '#009591' : '#FFFFFF'};
   color: ${props => props.$primary ? 'white' : 'black'};
+  border: ${props => props.$primary ? '1px solid #009591' : '1px solid #CECECE'};
 `;

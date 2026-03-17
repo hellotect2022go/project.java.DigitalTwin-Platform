@@ -20,6 +20,7 @@ import Users from '@/assets/icons/users.svg?react'
 import WidgetAdd from '@/assets/icons/widget-add.svg?react'
 import Widget from '@/assets/icons/widget.svg?react'
 import LockPassword from '@/assets/icons/lock-password.svg?react'
+import Cross from '@/assets/icons/cross.svg?react'
 
 export const SvgIcons = {
     Hana: (props) => <HanaLogo {...props}/>,
@@ -43,5 +44,6 @@ export const SvgIcons = {
     Users: (props) => <Users {...props}/>,
     WidgetAdd: (props) => <WidgetAdd {...props}/>,
     Widget: (props) => <Widget {...props}/>,
-    LockPassword: (props) => <LockPassword {...props}/>
+    LockPassword: (props) => <LockPassword {...props}/>,
+    Cross: (props) => <Cross {...props}/>,
 }
