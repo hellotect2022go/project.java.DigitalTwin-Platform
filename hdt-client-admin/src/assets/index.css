@@ -12,7 +12,7 @@
 }
 
 [data-theme='classic'] {
-  --base-font-size: 40px;
+  --base-font-size: 20px;
   --base-font: 'Serif';
   --bg-color: #f4f4f4;
 }

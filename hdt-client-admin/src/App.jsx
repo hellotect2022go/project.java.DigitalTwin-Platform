@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import AppRouter from "./routes/AppRouter";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ModalProvider } from "./contexts/ModalContext";
 
 function App() {
   useEffect(() => {
@@ -13,9 +14,11 @@ function App() {
     //   <AuthProvider>
     //     <ModalProvider>
     //       <GlobalStyle/>
-    <AuthProvider>
-      <AppRouter/>
-    </AuthProvider>
+    <ModalProvider>
+      <AuthProvider>
+        <AppRouter/>
+      </AuthProvider>
+    </ModalProvider>
     //     {/* </ModalProvider>  
     //   </AuthProvider>  
     // </ThemeProvider> */}

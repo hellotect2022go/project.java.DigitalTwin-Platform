@@ -1,14 +1,16 @@
 import styled from "styled-components";
 import { SvgIcons } from "../common/Icon";
 import { useAuth } from "@/contexts/AuthContext";
+import { useModal } from "@/contexts/ModalContext";
 
 const Header = () => {
 
     const {logout} = useAuth()
+    const {openModal} = useModal()
 
     const handleLogout = () => {
-        alert("로그아웃 합니까? 모달창으로 대체 ")
-        logout()
+        openModal({title:"로그아웃",content:"로그아웃 합니까? ",onConfirm:logout})
+        //logout()
     }
 
     return (
