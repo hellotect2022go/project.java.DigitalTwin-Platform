@@ -3,7 +3,10 @@ import AppRouter from "./routes/AppRouter";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ModalProvider } from "./contexts/ModalContext";
 import { RecentHistoryProvider } from "./contexts/SidebarHistoryContext";
+import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
 
+
+const queryClient = new QueryClient();
 function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'classic');
@@ -15,13 +18,15 @@ function App() {
     //   <AuthProvider>
     //     <ModalProvider>
     //       <GlobalStyle/>
-    <ModalProvider>
-      <AuthProvider>
-        <RecentHistoryProvider>
-          <AppRouter/>
-        </RecentHistoryProvider>
-      </AuthProvider>
-    </ModalProvider>
+    <QueryClientProvider client={queryClient}>
+      <ModalProvider>
+        <AuthProvider>
+          <RecentHistoryProvider>
+            <AppRouter/>
+          </RecentHistoryProvider>
+        </AuthProvider>
+      </ModalProvider>
+    </QueryClientProvider>
     //     {/* </ModalProvider>  
     //   </AuthProvider>  
     // </ThemeProvider> */}

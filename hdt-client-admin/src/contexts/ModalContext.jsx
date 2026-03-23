@@ -1,31 +1,43 @@
-import Modal from "@/components/common/Modal";
+import Modal from "@/components/modal/Modal";
 import { createContext, useCallback, useContext, useState } from "react";
 
 const ModalContext = createContext(null);
 
 export const ModalProvider = ({children}) => {
     const [modalConfig, setModalConfig] = useState({
-        isOpen:false,
-        title:'',
-        content:'',
-        onConfirm:null
+        isOpen: false,
+        title: "",
+        content: "",
+        onConfirm: null,
+        hideFooter: false,
+        wide: false,
     })
 
-    // 모달 열기 함수 
-    // provider 는 component 상태 값이 바뀔때마다 함수를 초기화 하고 다시 메모리에 할당 
-    // useCallback 을 사용하여 함수 메모리를 메모제이션 해서 사용함 
-    const openModal = useCallback(({title, content, onConfirm}) =>{
-        setModalConfig({
-            isOpen:true,
-            title,
-            content,
-            onConfirm,
-        })
-    },[])
+    // 모달 열기 함수
+    // hideFooter: true → 폼 등에서 본문만 표시(취소/확인 푸터 숨김)
+    // wide: true → 넓은 모달(등록/수정 폼용)
+    const openModal = useCallback(
+        ({ title, content, onConfirm, hideFooter = false, wide = false }) => {
+            setModalConfig({
+                isOpen: true,
+                title,
+                content,
+                onConfirm: hideFooter ? null : onConfirm,
+                hideFooter,
+                wide,
+            })
+        },
+        []
+    )
 
     const closeModal = useCallback(() => {
-        setModalConfig((prev) => ({ ...prev, isOpen: false }));
-    },[]);
+        setModalConfig((prev) => ({
+            ...prev,
+            isOpen: false,
+            hideFooter: false,
+            wide: false,
+        }))
+    }, [])
 
     return (
         <ModalContext.Provider value={{ openModal, closeModal }}>

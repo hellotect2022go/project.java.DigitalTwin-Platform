@@ -5,17 +5,18 @@ export const menuData = [
     label: "사용자 관리",
     abbr: "사용자",
     items: [
-      { title: "사용자 등록", icon: <SvgIcons.FileCheck/>, path: "/users/register" },
-      { title: "목록 조회", icon: <SvgIcons.ClipboardSearch/>, path: "/users/list" },
-      { title: "정보 수정", icon: <SvgIcons.Clipboard/>, path: "/users/edit" },
-      { title: "비밀번호 초기화", icon: <SvgIcons.LockPassword/>, path: "/users/password-reset" },
+      { title: "사용자 관리", icon: <SvgIcons.FileCheck/>, path: "/manage/user" },
+      // { title: "사용자 등록", icon: <SvgIcons.FileCheck/>, path: "/users/register" },
+      // { title: "목록 조회", icon: <SvgIcons.ClipboardSearch/>, path: "/users/list" },
+      // { title: "정보 수정", icon: <SvgIcons.Clipboard/>, path: "/users/edit" },
+      // { title: "비밀번호 초기화", icon: <SvgIcons.LockPassword/>, path: "/users/password-reset" },
     ]
   },
   {
     label: "권한 관리",
     abbr: "권한",
     items: [
-      { title: "사용자 그룹 관리", icon: <SvgIcons.Users/>, path: "/auth/groups" },
+      { title: "사용자 그룹 관리", icon: <SvgIcons.Users/>, path: "/manage/group" },
       { title: "그룹별 메뉴 권한 설정", icon: <SvgIcons.Widget/>, path: "/auth/menu-permission" },
       { title: "그룹별 기능 권한 설정", icon: <SvgIcons.Tunning/>, path: "/auth/feature-permission" },
     ]

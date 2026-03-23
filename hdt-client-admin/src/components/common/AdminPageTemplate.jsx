@@ -46,10 +46,10 @@ const PageDescription = styled.p`
 
 const ContentCard = styled.div`
   //border:2px solid black;
-  background: #ffffff;
+  //background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  padding: 24px;
+  //padding: 24px;
   //min-height: 320px;
   flex:1;
   

@@ -7,6 +7,10 @@ import vitePluginSvgr from 'vite-plugin-svgr'
 // https://vite.dev/config/
 export default defineConfig({
   base:'./',
+  server: {
+    open: '/admin/', // 브라우저를 열 때 이 주소로 열기
+    host:true
+  },
   plugins: [
     react(),
     vitePluginSvgr(),

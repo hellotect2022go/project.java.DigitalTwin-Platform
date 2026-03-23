@@ -22,6 +22,7 @@ const Sidebar = () => {
                 <MenuItem
                   key={itemIdx}
                   to={item.path}
+                  end
                   title={isCollapsed ? item.title : ""}
                   onClick={() => addSidebarHistory(item.path, item.title)}
                 >
@@ -79,6 +80,7 @@ const Sidebar = () => {
 
 const SidebarContainer = styled.aside`
   width: ${props => (props.$isCollapsed ? '80px' : '260px')};
+  min-width: ${props => (props.$isCollapsed ? '80px' : '260px')};
   background-color: #111d2c; // 이미지의 짙은 네이비 톤
   color: #fff;
   height: 100vh;

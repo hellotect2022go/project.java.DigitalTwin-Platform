@@ -4,10 +4,7 @@ import LoginPage from "@/pages/LoginPage"
 import MainLayout from "@/components/layout/MainLayout"
 import TestPage from "@/pages/TestPage"
 // 사용자 관리
-import UserRegisterPage from "@/pages/users/UserRegisterPage"
-import UserListPage from "@/pages/users/UserListPage"
-import UserEditPage from "@/pages/users/UserEditPage"
-import UserPasswordResetPage from "@/pages/users/UserPasswordResetPage"
+
 // 권한 관리
 import AuthGroupsPage from "@/pages/auth/AuthGroupsPage"
 import AuthMenuPermissionPage from "@/pages/auth/AuthMenuPermissionPage"
@@ -27,6 +24,8 @@ import LogStatisticsPage from "@/pages/log/LogStatisticsPage"
 // 시스템 관리
 import SystemServerPage from "@/pages/system/SystemServerPage"
 import SystemLogRetentionPage from "@/pages/system/SystemLogRetentionPage"
+import UserManagePage from "@/pages/users/UserManagePage"
+import UserManageGroupPage from "@/pages/users/UserManageGroupPage"
 
 const AppRouter = () => {
     return(
@@ -38,13 +37,15 @@ const AppRouter = () => {
                 {/* 로그인 후 토큰 발급받아서 사용 */}
                 <Route element={<PrivateRoute/>}>
                     <Route element={<MainLayout/>}>
-                        <Route path="/" element={<Navigate to="/users/register" replace />}/>
-                        <Route path="/test" element={<TestPage/>}/>
+                        <Route path="/" element={<Navigate to="/manage/user" replace />}/>
                         {/* 사용자 관리 */}
-                        <Route path="/users/register" element={<UserRegisterPage/>}/>
+                        <Route path="/manage/user" element={<UserManagePage/>}/>
+                        <Route path="/manage/group" element={<UserManageGroupPage/>}/>
+                        
+                        {/* <Route path="/users/register" element={<UserRegisterPage/>}/>
                         <Route path="/users/list" element={<UserListPage/>}/>
                         <Route path="/users/edit" element={<UserEditPage/>}/>
-                        <Route path="/users/password-reset" element={<UserPasswordResetPage/>}/>
+                        <Route path="/users/password-reset" element={<UserPasswordResetPage/>}/> */}
                         {/* 권한 관리 */}
                         <Route path="/auth/groups" element={<AuthGroupsPage/>}/>
                         <Route path="/auth/menu-permission" element={<AuthMenuPermissionPage/>}/>
