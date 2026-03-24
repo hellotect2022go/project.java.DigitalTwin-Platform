@@ -1,7 +1,7 @@
 package com.mpole.hdt.digitaltwin.service;
 
 import com.mpole.hdt.digitaltwin.persistence.user.User;
-import com.mpole.hdt.digitaltwin.persistence.user.UserRepo;
+import com.mpole.hdt.digitaltwin.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserLockService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepo;
     private static final int MAX_FAILED_ATTEMPTS = 1000000;
 
     /**

@@ -1,11 +1,11 @@
 package com.mpole.hdt.digitaltwin.config.initializer;
 
 import com.mpole.hdt.digitaltwin.persistence.menu.Menu;
-import com.mpole.hdt.digitaltwin.persistence.menu.MenuRepo;
+import com.mpole.hdt.digitaltwin.persistence.menu.MenuRepository;
 import com.mpole.hdt.digitaltwin.persistence.menu.RoleMenu;
-import com.mpole.hdt.digitaltwin.persistence.menu.RoleMenuRepo;
+import com.mpole.hdt.digitaltwin.persistence.menu.RoleMenuRepository;
 import com.mpole.hdt.digitaltwin.persistence.user.Role;
-import com.mpole.hdt.digitaltwin.persistence.user.RoleRepo;
+import com.mpole.hdt.digitaltwin.persistence.user.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +15,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class MenuDataCreate {
-    private final MenuRepo menuRepo;
-    private final RoleMenuRepo roleMenuRepo;
-    private final RoleRepo roleRepo;
+    private final MenuRepository menuRepo;
+    private final RoleMenuRepository roleMenuRepo;
+    private final RoleRepository roleRepo;
 
     public void initializeRoleMenu() {
         if (roleMenuRepo.count() > 0) return;
@@ -125,13 +125,9 @@ public class MenuDataCreate {
     // 편의를 위한 헬퍼 메서드
     private Menu createMenu(Menu parent, String name, String code, String url, String icon, int sort, int depth) {
         return Menu.builder()
-                .parentMenu(parent)
                 .menuName(name)
                 .menuCode(code)
-                .menuUrl(url)
-                .iconPath(icon)
                 .sortOrder(sort)
-                .depth(depth)
                 .active(true)
                 .build();
     }

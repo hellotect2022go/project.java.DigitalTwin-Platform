@@ -17,8 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final UserRepo userRepo;
-    private final RoleRepo roleRepo;
+    private final UserRepository userRepo;
+    private final RoleRepository roleRepo;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -40,8 +40,8 @@ public class DataInitializer implements CommandLineRunner {
         initializeUsers(); // 사용자 초기화
         initializeSopSampleData(); // SOP 샘플 데이터 초기화
 
-        menuDataCreate.initializeMenus();
-        menuDataCreate.initializeRoleMenu();
+        //menuDataCreate.initializeMenus();
+        //menuDataCreate.initializeRoleMenu();
     }
 
     private void initializeRole() {

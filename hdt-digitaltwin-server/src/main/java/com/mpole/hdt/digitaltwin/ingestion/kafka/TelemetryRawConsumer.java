@@ -7,6 +7,7 @@ import com.mpole.hdt.digitaltwin.ingestion.TelemetryIngestService;
 import com.mpole.hdt.digitaltwin.ingestion.TelemetryRaw;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 

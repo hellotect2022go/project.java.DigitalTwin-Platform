@@ -1,12 +1,10 @@
 package com.mpole.hdt.digitaltwin.api.controller;
 
 import com.mpole.hdt.digitaltwin.api.dto.*;
-import com.mpole.hdt.digitaltwin.api.dto.auth.ActiveSessionsResponse;
-import com.mpole.hdt.digitaltwin.api.dto.auth.ChangePasswordRequest;
-import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
-import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
+import com.mpole.hdt.digitaltwin.api.dto.auth.*;
 import com.mpole.hdt.digitaltwin.service.AuthService;
 import com.mpole.hdt.digitaltwin.config.security.JwtAuthenticationFilter;
+import com.mpole.hdt.digitaltwin.service.UserRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserRoleService userRoleService;
 
     /**
      * 로그인 (다중 기기 지원)
@@ -144,5 +143,6 @@ public class AuthController {
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Auth Service is running!");
     }
+
 }
 

@@ -41,6 +41,9 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        jdbc:
+          batch_size: 1000
+        order_updates: true # update sql 정렬 
         # PostgreSQL에 최적화된 쿼리를 생성하도록 방언 설정
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true

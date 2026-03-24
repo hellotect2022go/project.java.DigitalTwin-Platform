@@ -6,7 +6,7 @@ import com.mpole.hdt.digitaltwin.api.dto.auth.LoginRequest;
 import com.mpole.hdt.digitaltwin.api.dto.auth.LoginResponse;
 import com.mpole.hdt.digitaltwin.persistence.user.RefreshToken;
 import com.mpole.hdt.digitaltwin.persistence.user.User;
-import com.mpole.hdt.digitaltwin.persistence.user.UserRepo;
+import com.mpole.hdt.digitaltwin.persistence.user.UserRepository;
 import com.mpole.hdt.digitaltwin.config.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserLockService userLockService;
@@ -303,5 +303,7 @@ public class AuthService {
         }
         return ip;
     }
+
+
 }
 

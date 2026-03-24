@@ -68,7 +68,9 @@ public class SecurityConfig {
                                 "/stomp/**",
                                 "/ws/**",
                                 "/*.html", "/css/**", "/js/**", "/images/**",
-                                "/api/device/**"
+                                "/api/device/**",
+                                "/api/roles/**",
+                                "/api/users/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/auth/me",             // 내 정보 조회

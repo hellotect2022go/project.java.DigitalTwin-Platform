@@ -1,8 +1,11 @@
 package com.mpole.hdt.digitaltwin.persistence.user;
 
+import com.mpole.hdt.digitaltwin.api.dto.user.UserCreateRequest;
+import com.mpole.hdt.digitaltwin.api.dto.user.UserUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.util.StringUtils;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -124,6 +127,36 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = OffsetDateTime.now();
+    }
+
+    public void updateInfo(UserUpdateRequest req, String encodedPassword) {
+        // 유효성 검사 로직을 여기에 넣을 수도 있습니다.
+        this.username = req.username();
+        this.email = req.email();
+        this.active = req.active();
+        this.accountNonLocked = req.accountNonLocked();
+        this.failedLoginAttempts = req.failedLoginAttempts();
+        this.updatedAt = OffsetDateTime.now();
+
+        if (StringUtils.hasText(encodedPassword)) {
+            this.passwordHash = encodedPassword;
+            this.lastPasswordChangeDate = OffsetDateTime.now();
+        }
+    }
+
+    public static User create(UserCreateRequest req, String encodedPassword) {
+        return User.builder()
+                .loginId(req.loginId())
+                .username(req.username())
+                .email(req.email())
+                .passwordHash(encodedPassword)
+                // 기본값 설정 (PrePersist가 있지만 명시적으로 넣는게 안전함)
+                .active(req.active())
+                .accountNonLocked(true)
+                .failedLoginAttempts(0)
+                .lastPasswordChangeDate(OffsetDateTime.now())
+                .createdAt(OffsetDateTime.now())
+                .build();
     }
 
 }
