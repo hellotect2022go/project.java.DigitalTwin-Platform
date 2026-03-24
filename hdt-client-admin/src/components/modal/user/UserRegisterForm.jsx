@@ -14,15 +14,7 @@ const UserRegisterForm = ({ onSuccess, onCancel }) => {
     password: "",
     email: "",
     active: true,
-    roleIds: [],
   });
-
-  // 필요 API: 역할 목록 조회 (GET) → Role.roleId, roleName 사용
-  const [roleOptions] = useState([
-    { roleId: 1, roleName: "관리자", description: "시스템 관리자" },
-    { roleId: 2, roleName: "운영자", description: "일반 운영" },
-    { roleId: 3, roleName: "조회자", description: "조회 전용" },
-  ]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,15 +24,7 @@ const UserRegisterForm = ({ onSuccess, onCancel }) => {
     }));
   };
 
-  const handleRoleToggle = (roleId) => {
-    setForm((prev) => ({
-      ...prev,
-      roleIds: prev.roleIds.includes(roleId)
-        ? prev.roleIds.filter((id) => id !== roleId)
-        : [...prev.roleIds, roleId],
-    }));
-  };
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
     // 필요 API: 사용자 등록 (POST) - loginId, username, password, email, active, roleIds
@@ -109,7 +93,7 @@ const UserRegisterForm = ({ onSuccess, onCancel }) => {
         </FieldRow>
       </Section>
 
-      <Section>
+      {/* <Section>
         <SectionTitle>권한</SectionTitle>
         <FieldRow>
           <Label>역할</Label>
@@ -129,7 +113,7 @@ const UserRegisterForm = ({ onSuccess, onCancel }) => {
             ))}
           </RoleGroup>
         </FieldRow>
-      </Section>
+      </Section> */}
 
       <ButtonRow>
         {onCancel && (

@@ -20,11 +20,15 @@ const MainLayout = () => {
 
 
 const LayoutWrapper = styled.div`
+  //border: 3px solid purple;
   display: flex;
-  min-height: 100vh;
+  max-height: 100vh;
 `;
 
 const ContentArea = styled.main`
+  //max-height: 100vh;
+  //border: 1px solid blue;
+  height: 0px;
   flex: 1;
   display: flex;
   padding: 20px;

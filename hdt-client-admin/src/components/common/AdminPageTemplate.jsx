@@ -13,18 +13,23 @@ const AdminPageTemplate = ({ title, description, children }) => {
         <PageTitle>{title}</PageTitle>
         {description && <PageDescription>{description}</PageDescription>}
       </PageHeader>
-      <ContentCard>{children || <Placeholder>콘텐츠 영역</Placeholder>}</ContentCard>
+      <ContentCard>
+        {children || <Placeholder>콘텐츠 영역</Placeholder>}
+      </ContentCard>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  //border:1px solid red;
+  /* border:1px solid red; */
   max-width: 100%;
   flex:1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: scroll ;
+  &::-webkit-scrollbar { 
+    display: none;
+  }
 `;
 
 const PageHeader = styled.header`

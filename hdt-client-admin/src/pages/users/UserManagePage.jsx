@@ -4,12 +4,10 @@ import AdminPageTemplate from "@/components/common/AdminPageTemplate";
 import UserRegisterForm from "@/components/modal/user/UserRegisterForm";
 import UserEditModalForm from "@/components/modal/user/UserEditModalForm";
 import { useModal } from "@/contexts/ModalContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {createUserAPI, deleteUserAPI, fetchUsersAPI, updateUserAPI } from "@/services/userService";
+import Pagination from "@/components/common/Pagination";
 
-const ROLE_ID_TO_NAME = {
-  1: "최종관리자",
-  2: "운영자",
-  3: "조회자",
-};
 
 /**
  * 사용자 관리 — 검색/등록 + 목록
@@ -21,93 +19,80 @@ const UserManagePage = () => {
   const [typeFilter, setTypeFilter] = useState("all");
   const [searchField, setSearchField] = useState("loginId");
   const [keywordInput, setKeywordInput] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("");
 
-  const [list, setList] = useState([
-    {
-      userId: 2,
-      loginId: "test2",
-      username: "홍길동길동",
-      email: "",
-      active: true,
-      accountNonLocked: true,
-      failedLoginAttempts: 0,
-      lastPasswordChangeDate: "2026-03-01T09:00:00+09:00",
-      lastLoginDate: "2026-03-17T14:30:00+09:00",
-      createdAt: "2026-02-01T10:00:00+09:00",
-      updatedAt: "2026-03-10T11:00:00+09:00",
-      roleIds: [1],
-      roleName: "최종관리자",
+  const [page, setPage] = useState(0); // 서버 기준 0부터 시작
+  const [searchKeyword, setSearchKeyword] = useState({});
+  
+  const queryClient = useQueryClient()
+  // 1. 조회용 
+  const {data:{fetchUsers, pagination}={}} = useQuery({
+    queryKey: ['fetchUsers',page, searchKeyword],
+    queryFn: () => fetchUsersAPI({page, size:1, ...searchKeyword}),
+    select: (response) => ({
+      fetchUsers: response.data.data.content,
+      pagination : {
+        totalPages: response.data.data.totalPages,
+        currentPage: response.data.data.number,
+        totalElements: response.data.data.totalElements,
+        isLast: response.data.data.last
+      }
+    })
+  })
+
+  console.log('fetchUsers',fetchUsers)
+
+  // 2. 생성용
+  const { mutate: createUser } = useMutation({
+    mutationFn: createUserAPI,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+      closeModal();
+    }
+  });
+
+  // 3. 수정용
+  const { mutate: updateUser } = useMutation({
+    mutationFn: updateUserAPI,
+    onSuccess: () => {
+      console.log("✅ 성공! ???"); // 호출 안 됨
+      queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+      console.log("???")
+      closeModal();
     },
-    {
-      userId: 1,
-      loginId: "admin",
-      username: "관리자",
-      email: "admin@example.com",
-      active: true,
-      accountNonLocked: true,
-      failedLoginAttempts: 0,
-      lastPasswordChangeDate: "2026-03-15T08:00:00+09:00",
-      lastLoginDate: "2026-03-17T09:00:00+09:00",
-      createdAt: "2026-01-05T10:00:00+09:00",
-      updatedAt: "2026-03-16T12:00:00+09:00",
-      roleIds: [1],
-      roleName: "최종관리자",
-    },
-  ]);
+  });
+
+  // 4.삭제용
+    const { mutate: deleteUser } = useMutation({
+      mutationFn: deleteUserAPI,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+        closeModal();
+      }
+    });
 
   const handleSearchClick = () => {
-    setSearchKeyword(keywordInput.trim());
+    
+    const trimmedKeyword = keywordInput.trim()
+    let isActive = null;
+    if (typeFilter === 'active') isActive = true;
+    if (typeFilter === 'inactive') isActive = false;
+    const searchParam = {
+      ...(isActive != null && {active: isActive}),
+      ...(trimmedKeyword && {[searchField]:trimmedKeyword})
+    }
+    //setSearchKeyword(keywordInput.trim());
+    setSearchKeyword(searchParam)
+    setPage(0)
+
   };
 
-  const filtered = useMemo(() => {
-    return list.filter((row) => {
-      if (typeFilter === "active" && !row.active) return false;
-      if (typeFilter === "inactive" && row.active) return false;
-      if (!searchKeyword) return true;
-      const k = searchKeyword.toLowerCase();
-      if (searchField === "loginId") {
-        return row.loginId.toLowerCase().includes(k);
-      }
-      return row.username.toLowerCase().includes(k);
-    });
-  }, [list, typeFilter, searchField, searchKeyword]);
-
   const openRegisterModal = () => {
-    openModal({
-      title: "사용자 등록",
-      hideFooter: true,
-      wide: true,
+    openModal({title: "사용자 등록",hideFooter: true,wide: true,
       content: (
         <UserRegisterForm
           onCancel={closeModal}
           onSuccess={(formData) => {
-            closeModal();
-            if (!formData) return;
-            const roleName =
-              formData.roleIds?.length > 0
-                ? formData.roleIds.map((id) => ROLE_ID_TO_NAME[id] || "역할").join(", ")
-                : "—";
-            const nextId = Math.max(0, ...list.map((u) => u.userId)) + 1;
-            const now = new Date().toISOString();
-            setList((prev) => [
-              {
-                userId: nextId,
-                loginId: formData.loginId,
-                username: formData.username,
-                email: formData.email || "",
-                active: formData.active !== false,
-                accountNonLocked: true,
-                failedLoginAttempts: 0,
-                lastPasswordChangeDate: now,
-                lastLoginDate: null,
-                createdAt: now,
-                updatedAt: now,
-                roleIds: formData.roleIds?.length ? [...formData.roleIds] : [],
-                roleName,
-              },
-              ...prev,
-            ]);
+            createUser(formData)
           }}
         />
       ),
@@ -115,41 +100,13 @@ const UserManagePage = () => {
   };
 
   const openEditModal = (row) => {
-    openModal({
-      title: "사용자 수정",
-      hideFooter: true,
-      wide: true,
+    openModal({title: "사용자 수정", hideFooter: true, wide: true,
       content: (
         <UserEditModalForm
           user={row}
           onCancel={closeModal}
           onSave={(payload) => {
-            const roleName =
-              payload.roleIds?.length > 0
-                ? payload.roleIds.map((id) => ROLE_ID_TO_NAME[id] || "역할").join(", ")
-                : "—";
-            const now = new Date().toISOString();
-            setList((prev) =>
-              prev.map((u) =>
-                u.userId === payload.userId
-                  ? {
-                      ...u,
-                      username: payload.username,
-                      email: payload.email ?? "",
-                      active: payload.active,
-                      accountNonLocked: payload.accountNonLocked,
-                      failedLoginAttempts: payload.failedLoginAttempts,
-                      roleIds: payload.roleIds ? [...payload.roleIds] : u.roleIds,
-                      roleName,
-                      lastPasswordChangeDate: payload.password
-                        ? now
-                        : u.lastPasswordChangeDate,
-                      updatedAt: now,
-                    }
-                  : u
-              )
-            );
-            closeModal();
+            updateUser({userId:row.userId, payload})
           }}
         />
       ),
@@ -157,11 +114,10 @@ const UserManagePage = () => {
   };
 
   const openDeleteModal = (row) => {
-    openModal({
-      title: "삭제 확인",
+    openModal({title: "삭제 확인",
       content: `${row.username} (${row.loginId}) 사용자를 삭제할까요?`,
       onConfirm: () => {
-        setList((prev) => prev.filter((u) => u.userId !== row.userId));
+        deleteUser(row.userId)
       },
     });
   };
@@ -201,22 +157,22 @@ const UserManagePage = () => {
               <Th>번호</Th>
               <Th>아이디</Th>
               <Th>이름</Th>
-              <Th>그룹명</Th>
+              {/* <Th>그룹명</Th> */}
               <Th $center>관리</Th>
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {fetchUsers?.length === 0 ? (
               <tr>
                 <Td colSpan={5}>조건에 맞는 사용자가 없습니다.</Td>
               </tr>
             ) : (
-              filtered.map((row) => (
+              fetchUsers?.map((row) => (
                 <tr key={row.userId}>
                   <Td>{row.userId}</Td>
                   <Td>{row.loginId}</Td>
                   <Td>{row.username}</Td>
-                  <Td>{row.roleName}</Td>
+                  {/* <Td>{row.roleName}</Td> */}
                   <Td $center>
                     <EditBtn type="button" onClick={() => openEditModal(row)}>
                       수정
@@ -231,6 +187,10 @@ const UserManagePage = () => {
           </tbody>
         </Table>
       </TableWrap>
+      {pagination && <Pagination 
+        data={pagination} 
+        onPageChange={(targetPage) => setPage(targetPage)}
+      />}
     </AdminPageTemplate>
   );
 };
@@ -251,7 +211,7 @@ const Toolbar = styled.div`
 
 const FilterGroup = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  //flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 `;
@@ -281,6 +241,7 @@ const SearchButton = styled.button`
   padding: 8px 20px;
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
   color: #fff;
   background: #4a6380;
   border: none;

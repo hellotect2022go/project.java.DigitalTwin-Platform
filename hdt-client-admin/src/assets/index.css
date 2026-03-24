@@ -35,6 +35,13 @@ body {
   padding: 0;
 }
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important; /* 영역 자체를 제거 */
+  width: 0 !important;      /* 혹시 모를 너비 초기화 */
+  height: 0 !important;
+}
+
 /* 3. 입력창 등 폰트 상속이 안 되는 요소들 강제 적용 */
 button, input, select, textarea {
   font-family: inherit;

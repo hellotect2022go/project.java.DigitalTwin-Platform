@@ -4,6 +4,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ModalProvider } from "./contexts/ModalContext";
 import { RecentHistoryProvider } from "./contexts/SidebarHistoryContext";
 import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
+import { LoadingProvider } from "./contexts/LoadingContext";
 
 
 const queryClient = new QueryClient();
@@ -22,7 +23,9 @@ function App() {
       <ModalProvider>
         <AuthProvider>
           <RecentHistoryProvider>
-            <AppRouter/>
+            <LoadingProvider>
+              <AppRouter/>
+            </LoadingProvider>
           </RecentHistoryProvider>
         </AuthProvider>
       </ModalProvider>

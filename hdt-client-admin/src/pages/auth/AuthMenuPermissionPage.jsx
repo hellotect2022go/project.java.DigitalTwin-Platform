@@ -1,11 +1,14 @@
 import AdminPageTemplate from "@/components/common/AdminPageTemplate";
+import MenuPermissionByRole from "@/components/auth/MenuPermissionByRole";
 
 const AuthMenuPermissionPage = () => {
   return (
     <AdminPageTemplate
       title="그룹별 메뉴 권한 설정"
-      description="그룹별로 메뉴 접근 권한을 설정합니다."
-    />
+      description="역할(그룹)별로 사이드 메뉴 접근을 허용하거나 제한합니다."
+    >
+      <MenuPermissionByRole />
+    </AdminPageTemplate>
   );
 };
 

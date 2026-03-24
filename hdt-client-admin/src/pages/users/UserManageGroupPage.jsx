@@ -43,12 +43,6 @@ const UserManageGroupPage = () => {
       console.log("✅ 성공!"); // 호출 안 됨
       queryClient.invalidateQueries({ queryKey: ['fetchRoles'] });
       closeModal();
-    },
-    onError: (error) => {
-      console.error("❌ 에러 발생:", error); // 여기가 실행되는지 확인!
-    },
-    onSettled: () => {
-      console.log("🔄 결과와 상관없이 종료됨");
     }
   });
 
@@ -77,6 +71,7 @@ const UserManageGroupPage = () => {
       return (row.description || "").toLowerCase().includes(k);
     });
   }, [fetchRoles, searchField, searchKeyword]);
+  
 
   const openRegisterModal = () => {
     openModal({title: "권한 등록",hideFooter: true,wide: true,content: (
