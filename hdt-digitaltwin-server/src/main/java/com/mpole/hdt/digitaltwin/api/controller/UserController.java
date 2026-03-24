@@ -24,11 +24,10 @@ public class UserController {
      * 사용자
      */
     @GetMapping
-    public ResponseEntity<ApiResponse> fetchUsers(
-            @RequestParam(value = "active", required = false)Boolean active,
-            @RequestParam(value = "loginId", required = false)String loginId,
-            @RequestParam(value = "username", required = false)String username,
-            @PageableDefault(size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable
+    public ResponseEntity<ApiResponse> fetchUsers(@RequestParam(value = "active", required = false)Boolean active,
+                                                  @RequestParam(value = "loginId", required = false)String loginId,
+                                                  @RequestParam(value = "username", required = false)String username,
+                                                  @PageableDefault(size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return ResponseEntity.ok(ApiResponse.success("사용자 목록 조회", userService.getUsers(active, loginId,username, pageable)));
     }
